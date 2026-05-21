@@ -17,7 +17,18 @@ const COLLECTION = 'products'
 export const getProducts = async (): Promise<Product[]> => {
   const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'))
   const snapshot = await getDocs(q)
-  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Product))
+  return snapshot.docs.map((d) => {
+    const data = d.data()
+    return {
+      id: d.id,
+      name: data.name,
+      description: data.description ?? '',
+      category: data.category ?? 'other',
+      variants: data.variants ?? [],
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    } as Product
+  })
 }
 
 export const addProduct = async (input: ProductInput) => {

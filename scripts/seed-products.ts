@@ -6,7 +6,6 @@ import admin from 'firebase-admin'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
 
-// Load .env
 for (const line of readFileSync(resolve(root, '.env'), 'utf-8').split('\n')) {
   const trimmed = line.trim()
   if (!trimmed || trimmed.startsWith('#')) continue
@@ -46,17 +45,25 @@ const products = [
     name: 'Wireless Headphones',
     description:
       'Premium noise-cancelling wireless headphones with 30-hour battery life and deep bass.',
-    price: 79.99,
-    imageUrl: '',
-    category: 'Electronics',
+    category: 'electronics',
+    variants: [
+      { name: 'Black', price: 79.99, imageUrl: '' },
+      { name: 'White', price: 79.99, imageUrl: '' },
+    ],
   },
   {
     name: 'Trail Running Shoes',
     description:
       'Lightweight trail running shoes with responsive cushioning and rugged grip for any terrain.',
-    price: 129.99,
-    imageUrl: '',
-    category: 'Sports',
+    category: 'sports',
+    variants: [
+      { name: 'US 9 – Red', price: 119.99, imageUrl: '' },
+      { name: 'US 9 – Blue', price: 119.99, imageUrl: '' },
+      { name: 'US 10 – Red', price: 129.99, imageUrl: '' },
+      { name: 'US 10 – Blue', price: 129.99, imageUrl: '' },
+      { name: 'US 11 – Red', price: 139.99, imageUrl: '' },
+      { name: 'US 11 – Blue', price: 139.99, imageUrl: '' },
+    ],
   },
 ]
 
