@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
-import { loginWithEmail, loginWithGoogle, logout } from '../services/authService'
+import { loginWithEmail, logout } from '../services/authService'
 import { useAuth } from '../contexts/useAuth'
 
 export const LoginPage = () => {
@@ -18,16 +18,6 @@ export const LoginPage = () => {
       navigate('/admin/products')
     } catch {
       setError('Invalid credentials')
-    }
-  }
-
-  const handleGoogleLogin = async () => {
-    try {
-      setError('')
-      await loginWithGoogle()
-      navigate('/admin/products')
-    } catch {
-      setError('Google sign-in failed')
     }
   }
 
@@ -79,19 +69,6 @@ export const LoginPage = () => {
           Sign In (Admin)
         </button>
       </form>
-
-      <div className="flex items-center gap-2 w-full max-w-sm">
-        <div className="flex-1 h-px bg-gray-300" />
-        <span className="text-sm text-gray-400">or</span>
-        <div className="flex-1 h-px bg-gray-300" />
-      </div>
-
-      <button
-        onClick={handleGoogleLogin}
-        className="w-full max-w-sm rounded-lg border border-gray-300 px-6 py-2 flex items-center justify-center gap-2 hover:bg-gray-50"
-      >
-        Sign in with Google
-      </button>
     </div>
   )
 }
