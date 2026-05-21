@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { CATEGORIES } from '@ecommerce/shared'
 import type { ProductInput } from '@ecommerce/shared'
 
 interface Props {
@@ -11,7 +12,7 @@ export const ProductForm = ({ onSubmit }: Props) => {
     description: '',
     price: 0,
     imageUrl: '',
-    category: '',
+    category: 'other',
   })
   const [submitting, setSubmitting] = useState(false)
 
@@ -19,7 +20,7 @@ export const ProductForm = ({ onSubmit }: Props) => {
     e.preventDefault()
     setSubmitting(true)
     await onSubmit(form)
-    setForm({ name: '', description: '', price: 0, imageUrl: '', category: '' })
+    setForm({ name: '', description: '', price: 0, imageUrl: '', category: 'other' })
     setSubmitting(false)
   }
 
@@ -54,12 +55,17 @@ export const ProductForm = ({ onSubmit }: Props) => {
         onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
         className="w-full rounded-lg border border-gray-300 px-3 py-2"
       />
-      <input
-        placeholder="Category"
+      <select
         value={form.category}
-        onChange={(e) => setForm({ ...form, category: e.target.value })}
+        onChange={(e) => setForm({ ...form, category: e.target.value as typeof form.category })}
         className="w-full rounded-lg border border-gray-300 px-3 py-2"
-      />
+      >
+        {CATEGORIES.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' ')}
+          </option>
+        ))}
+      </select>
       <button
         type="submit"
         disabled={submitting}
