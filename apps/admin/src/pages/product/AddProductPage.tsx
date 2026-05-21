@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { addProduct } from "@ecommerce/shared";
 import { ProductForm } from "./components/ProductForm";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ProductInput } from "@ecommerce/shared";
 
 export const AddProductPage = () => {
@@ -13,8 +14,14 @@ export const AddProductPage = () => {
 
   return (
     <div className="max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Add Product</h2>
-      <ProductForm onSubmit={handleAdd} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Add Product</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProductForm onSubmit={handleAdd} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

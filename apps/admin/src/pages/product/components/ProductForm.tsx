@@ -1,10 +1,24 @@
 import { useState, type FormEvent } from 'react'
 import { CATEGORIES } from '@ecommerce/shared'
 import type { ProductInput } from '@ecommerce/shared'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface Props {
   onSubmit: (input: ProductInput) => Promise<void>
 }
+
+const catLabel = (cat: string) =>
+  cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' ')
 
 export const ProductForm = ({ onSubmit }: Props) => {
   const [form, setForm] = useState<ProductInput>({
@@ -26,53 +40,73 @@ export const ProductForm = ({ onSubmit }: Props) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
-      <input
-        placeholder="Name"
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2"
-        required
-      />
-      <textarea
-        placeholder="Description"
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2"
-        rows={3}
-      />
-      <input
-        placeholder="Price"
-        type="number"
-        step="0.01"
-        value={form.price || ''}
-        onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2"
-        required
-      />
-      <input
-        placeholder="Image URL"
-        value={form.imageUrl}
-        onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2"
-      />
-      <select
-        value={form.category}
-        onChange={(e) => setForm({ ...form, category: e.target.value as typeof form.category })}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2"
-      >
-        {CATEGORIES.map((cat) => (
-          <option key={cat} value={cat}>
-            {cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' ')}
-          </option>
-        ))}
-      </select>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="rounded-lg bg-black px-6 py-2 text-white disabled:opacity-50"
-      >
+      <div className="space-y-2">
+        <Label htmlFor="name">Name</Label>
+        <Input
+          id="name"
+          placeholder="Product name"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          placeholder="Product description"
+          value={form.description}
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
+          rows={3}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="price">Price</Label>
+        <Input
+          id="price"
+          placeholder="0.00"
+          type="number"
+          step="0.01"
+          value={form.price || ''}
+          onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="imageUrl">Image URL</Label>
+        <Input
+          id="imageUrl"
+          placeholder="https://..."
+          value={form.imageUrl}
+          onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+        <Select
+          value={form.category}
+          onValueChange={(value) => setForm({ ...form, category: value as typeof form.category })}
+        >
+          <SelectTrigger id="category">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {CATEGORIES.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {catLabel(cat)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Button type="submit" disabled={submitting}>
         {submitting ? 'Adding...' : 'Add Product'}
-      </button>
+      </Button>
     </form>
   )
 }
