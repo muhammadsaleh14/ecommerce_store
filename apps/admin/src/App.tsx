@@ -3,6 +3,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { AdminRoute } from "./components/AdminRoute";
 import { LoginPage } from "./pages/LoginPage";
 import { AdminProductsPage } from "./pages/product/AdminProductsPage";
+import { AddProductPage } from "./pages/product/AddProductPage";
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <AdminProductsPage />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/products/new"
+                element={
+                  <AdminRoute>
+                    <AddProductPage />
                   </AdminRoute>
                 }
               />

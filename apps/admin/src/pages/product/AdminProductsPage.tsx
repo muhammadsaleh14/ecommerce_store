@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getProducts, addProduct, deleteProduct } from "@ecommerce/shared";
+import { Link } from "react-router";
+import { getProducts, deleteProduct } from "@ecommerce/shared";
 import { ProductCard } from "./components/ProductCard";
-import { ProductForm } from "./components/ProductForm";
-import type { Product, ProductInput } from "@ecommerce/shared";
+import type { Product } from "@ecommerce/shared";
 
 export const AdminProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -14,12 +14,6 @@ export const AdminProductsPage = () => {
       setLoading(false);
     });
   }, []);
-
-  const handleAdd = async (input: ProductInput) => {
-    await addProduct(input);
-    const data = await getProducts();
-    setProducts(data);
-  };
 
   const handleDelete = async (id: string) => {
     await deleteProduct(id);
@@ -35,27 +29,29 @@ export const AdminProductsPage = () => {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="text-lg font-semibold mb-4">Add Product</h2>
-        <ProductForm onSubmit={handleAdd} />
-      </section>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Manage Products</h2>
+        <Link
+          to="/admin/products/new"
+          className="rounded-lg bg-black px-4 py-2 text-white text-sm"
+        >
+          + Add Product
+        </Link>
+      </div>
 
-      <section>
-        <h2 className="text-2xl font-bold mb-6">Manage Products</h2>
-        {products.length === 0 ? (
-          <p className="text-gray-500">No products yet.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-        )}
-      </section>
+      {products.length === 0 ? (
+        <p className="text-gray-500">No products yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
