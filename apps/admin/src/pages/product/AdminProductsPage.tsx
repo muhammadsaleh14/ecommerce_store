@@ -1,38 +1,36 @@
-import { useEffect, useState } from 'react'
-import {
-  getProducts,
-  addProduct,
-  deleteProduct,
-} from '@ecommerce/shared'
-import { ProductCard } from '../components/ProductCard'
-import { ProductForm } from '../components/ProductForm'
-import type { Product, ProductInput } from '@ecommerce/shared'
+import { useEffect, useState } from "react";
+import { getProducts, addProduct, deleteProduct } from "@ecommerce/shared";
+import { ProductCard } from "./components/ProductCard";
+import { ProductForm } from "./components/ProductForm";
+import type { Product, ProductInput } from "@ecommerce/shared";
 
 export const AdminProductsPage = () => {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getProducts().then((data) => {
-      setProducts(data)
-      setLoading(false)
-    })
-  }, [])
+      setProducts(data);
+      setLoading(false);
+    });
+  }, []);
 
   const handleAdd = async (input: ProductInput) => {
-    await addProduct(input)
-    const data = await getProducts()
-    setProducts(data)
-  }
+    await addProduct(input);
+    const data = await getProducts();
+    setProducts(data);
+  };
 
   const handleDelete = async (id: string) => {
-    await deleteProduct(id)
-    const data = await getProducts()
-    setProducts(data)
-  }
+    await deleteProduct(id);
+    const data = await getProducts();
+    setProducts(data);
+  };
 
   if (loading) {
-    return <div className="text-center p-8 text-gray-500">Loading products...</div>
+    return (
+      <div className="text-center p-8 text-gray-500">Loading products...</div>
+    );
   }
 
   return (
@@ -59,5 +57,5 @@ export const AdminProductsPage = () => {
         )}
       </section>
     </div>
-  )
-}
+  );
+};

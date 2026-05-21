@@ -1,8 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
-import { AuthProvider } from './contexts/AuthContext'
-import { AdminRoute } from './components/AdminRoute'
-import { LoginPage } from './pages/LoginPage'
-import { AdminProductsPage } from './pages/AdminProductsPage'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { AuthProvider } from "./contexts/AuthContext";
+import { AdminRoute } from "./components/AdminRoute";
+import { LoginPage } from "./pages/LoginPage";
+import { AdminProductsPage } from "./pages/product/AdminProductsPage";
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
         </div>
       </AuthProvider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
