@@ -8,11 +8,13 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed:admin": "tsx scripts/seed-admin.ts"
+    "seed:admin": "tsx scripts/seed-admin.ts",
+    "seed:products": "tsx scripts/seed-products.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "firebase": "^12.13.0",
+    "firebase-admin": "^13.10.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router": "^7.15.1",

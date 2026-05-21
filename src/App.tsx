@@ -1,13 +1,14 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router'
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router'
 import { AuthProvider } from './contexts/AuthContext'
-import { ProtectedRoute } from './components/ProtectedRoute'
+import { AdminRoute } from './components/AdminRoute'
 import { useAuth } from './contexts/AuthContext'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { ProductsPage } from './pages/ProductsPage'
+import { AdminProductsPage } from './pages/AdminProductsPage'
 
 function Nav() {
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b bg-white">
       <Link to="/" className="font-bold text-lg">
@@ -17,6 +18,14 @@ function Nav() {
         <Link to="/products" className="text-sm text-gray-600 hover:text-black">
           Products
         </Link>
+        {isAdmin && (
+          <Link
+            to="/admin/products"
+            className="text-sm text-gray-600 hover:text-black"
+          >
+            Admin
+          </Link>
+        )}
         {user ? (
           <span className="text-sm text-gray-500">{user.email}</span>
         ) : (
@@ -42,12 +51,17 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/products" element={<ProductsPage />} />
               <Route
-                path="/products"
+                path="/admin"
+                element={<Navigate to="/admin/products" replace />}
+              />
+              <Route
+                path="/admin/products"
                 element={
-                  <ProtectedRoute>
-                    <ProductsPage />
-                  </ProtectedRoute>
+                  <AdminRoute>
+                    <AdminProductsPage />
+                  </AdminRoute>
                 }
               />
             </Routes>

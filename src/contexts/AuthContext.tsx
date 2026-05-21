@@ -11,13 +11,21 @@ import { auth } from '../lib/firebase'
 interface AuthContextValue {
   user: User | null
   loading: boolean
+  isAdmin: boolean
 }
 
-const AuthContext = createContext<AuthContextValue>({ user: null, loading: true })
+const AuthContext = createContext<AuthContextValue>({
+  user: null,
+  loading: true,
+  isAdmin: false,
+})
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const isAdmin =
+    user?.providerData?.some((p) => p?.providerId === 'password') ?? false
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -28,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   )
