@@ -1,12 +1,11 @@
 import {
   createContext,
-  useContext,
   useEffect,
   useState,
   type ReactNode,
 } from 'react'
 import { onAuthStateChanged, type User } from 'firebase/auth'
-import { auth } from '../lib/firebase'
+import { auth } from '@ecommerce/shared'
 
 interface AuthContextValue {
   user: User | null
@@ -42,4 +41,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export { AuthContext }

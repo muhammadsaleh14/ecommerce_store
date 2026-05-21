@@ -1,0 +1,16 @@
+{
+  "name": "@ecommerce/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "firebase": "^12.13.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2"
+  }
+}

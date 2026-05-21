@@ -3,34 +3,32 @@ import {
   getProducts,
   addProduct,
   deleteProduct,
-} from '../services/productService'
+} from '@ecommerce/shared'
 import { ProductCard } from '../components/ProductCard'
 import { ProductForm } from '../components/ProductForm'
-import type { Product, ProductInput } from '../types/product'
+import type { Product, ProductInput } from '@ecommerce/shared'
 
 export const AdminProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
-  const fetchProducts = async () => {
-    setLoading(true)
-    const data = await getProducts()
-    setProducts(data)
-    setLoading(false)
-  }
-
   useEffect(() => {
-    fetchProducts()
+    getProducts().then((data) => {
+      setProducts(data)
+      setLoading(false)
+    })
   }, [])
 
   const handleAdd = async (input: ProductInput) => {
     await addProduct(input)
-    await fetchProducts()
+    const data = await getProducts()
+    setProducts(data)
   }
 
   const handleDelete = async (id: string) => {
     await deleteProduct(id)
-    await fetchProducts()
+    const data = await getProducts()
+    setProducts(data)
   }
 
   if (loading) {

@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Monorepo build outputs
+apps/*/dist
+packages/*/dist
+
 # Environment variables
 .env
 

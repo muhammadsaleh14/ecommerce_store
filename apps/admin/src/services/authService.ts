@@ -1,4 +1,4 @@
-import { auth } from '../lib/firebase'
+import { auth } from '@ecommerce/shared'
 import {
   signInWithEmailAndPassword,
   signInWithPopup,

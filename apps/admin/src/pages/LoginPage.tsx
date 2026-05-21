@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { loginWithEmail, loginWithGoogle, logout } from '../services/authService'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../contexts/useAuth'
 
 export const LoginPage = () => {
   const { user } = useAuth()
@@ -15,7 +15,7 @@ export const LoginPage = () => {
     try {
       setError('')
       await loginWithEmail(email, password)
-      navigate('/products')
+      navigate('/admin/products')
     } catch {
       setError('Invalid credentials')
     }
@@ -25,7 +25,7 @@ export const LoginPage = () => {
     try {
       setError('')
       await loginWithGoogle()
-      navigate('/')
+      navigate('/admin/products')
     } catch {
       setError('Google sign-in failed')
     }

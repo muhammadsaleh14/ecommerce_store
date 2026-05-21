@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import type { ProductInput } from '../types/product'
+import type { ProductInput } from '@ecommerce/shared'
 
 interface Props {
   onSubmit: (input: ProductInput) => Promise<void>
