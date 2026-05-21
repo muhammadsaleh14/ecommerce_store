@@ -1,29 +1,14 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { getProducts, deleteProduct } from "@ecommerce/shared";
+import { useProducts, useDeleteProduct } from "../../hooks/queries/useProducts";
 import { ProductCard } from "./components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Product } from "@ecommerce/shared";
 
 export const AdminProductsPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: products, isLoading } = useProducts();
+  const deleteMutation = useDeleteProduct();
 
-  useEffect(() => {
-    getProducts().then((data) => {
-      setProducts(data);
-      setLoading(false);
-    });
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    await deleteProduct(id);
-    const data = await getProducts();
-    setProducts(data);
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-8 w-48" />
@@ -45,7 +30,7 @@ export const AdminProductsPage = () => {
         </Button>
       </div>
 
-      {products.length === 0 ? (
+      {!products || products.length === 0 ? (
         <p className="text-muted-foreground">No products yet.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -53,7 +38,7 @@ export const AdminProductsPage = () => {
             <ProductCard
               key={product.id}
               product={product}
-              onDelete={handleDelete}
+              onDelete={(id) => deleteMutation.mutate(id)}
             />
           ))}
         </div>
