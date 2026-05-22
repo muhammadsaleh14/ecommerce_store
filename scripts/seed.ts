@@ -1,7 +1,7 @@
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import admin from 'firebase-admin'
+import { createClient } from '@supabase/supabase-js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
@@ -14,31 +14,53 @@ for (const line of readFileSync(resolve(root, '.env'), 'utf-8').split('\n')) {
   process.env[trimmed.slice(0, sep).trim()] = trimmed.slice(sep + 1).trim()
 }
 
-const serviceAccountPath = resolve(
-  root,
-  process.env.SERVICE_ACCOUNT_PATH || 'service-account.json',
-)
+const supabaseUrl = process.env.VITE_SUPABASE_URL
+const serviceKey = process.env.SUPABASE_SERVICE_KEY
 
-if (!existsSync(serviceAccountPath)) {
+if (!supabaseUrl || !serviceKey) {
   console.error(
-    `Service account file not found at ${serviceAccountPath}\n` +
-      '1. Go to Firebase Console → Project Settings → Service Accounts\n' +
-      '2. Click "Generate new private key"\n' +
-      '3. Save the file as service-account.json in the project root\n' +
-      '4. Run this script again',
+    'Missing VITE_SUPABASE_URL or SUPABASE_SERVICE_KEY in .env',
   )
   process.exit(1)
 }
 
-const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf-8'))
+const supabase = createClient(supabaseUrl, serviceKey)
 
-if (admin.apps.length === 0) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  })
+async function seedProduct(
+  name: string,
+  description: string,
+  category: string,
+  variants: { name: string; price: number; imageUrl: string }[],
+) {
+  const { data: product, error: productError } = await supabase
+    .from('products')
+    .insert({ name, description, category })
+    .select()
+    .single()
+
+  if (productError) {
+    console.error(`Failed to create product "${name}":`, productError)
+    return
+  }
+
+  const { error: variantError } = await supabase
+    .from('product_variants')
+    .insert(
+      variants.map((v) => ({
+        product_id: product.id,
+        name: v.name,
+        price: v.price,
+        image_url: v.imageUrl,
+      })),
+    )
+
+  if (variantError) {
+    console.error(`Failed to create variants for "${name}":`, variantError)
+    return
+  }
+
+  console.log(`Created "${name}" (${product.id})`)
 }
-
-const db = admin.firestore()
 
 const products = [
   {
@@ -67,15 +89,8 @@ const products = [
   },
 ]
 
-const col = db.collection('products')
-
-for (const product of products) {
-  const ref = await col.add({
-    ...product,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-  })
-  console.log(`Created product "${product.name}" (${ref.id})`)
+for (const p of products) {
+  await seedProduct(p.name, p.description, p.category, p.variants)
 }
 
 console.log('Done — 2 products seeded.')

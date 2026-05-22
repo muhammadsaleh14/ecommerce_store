@@ -4,8 +4,8 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { onAuthStateChanged, type User } from 'firebase/auth'
-import { auth } from '@ecommerce/shared'
+import type { User } from '@supabase/supabase-js'
+import { supabase } from '@ecommerce/shared'
 
 interface AuthContextValue {
   user: User | null
@@ -23,15 +23,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const isAdmin =
-    user?.providerData?.some((p) => p?.providerId === 'password') ?? false
+  const isAdmin = user !== null
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u)
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
       setLoading(false)
     })
-    return unsub
+
+    return () => listener?.subscription.unsubscribe()
   }, [])
 
   return (

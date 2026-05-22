@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import type { Timestamp } from 'firebase/firestore'
 
 export const CATEGORIES = [
   'electronics',
@@ -35,6 +34,6 @@ export type ProductInput = z.infer<typeof productSchema>
 
 export interface Product extends z.infer<typeof productSchema> {
   id: string
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: string
+  updatedAt: string
 }

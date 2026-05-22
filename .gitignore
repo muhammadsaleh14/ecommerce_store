@@ -19,9 +19,6 @@ packages/*/dist
 # Environment variables
 .env
 
-# Firebase service account (keep secret!)
-service-account.json
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
