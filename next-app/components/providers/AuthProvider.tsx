@@ -19,20 +19,35 @@ const AuthContext = createContext<AuthContextValue>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-
-  const isAdmin = user !== null
+  const [admin, setAdmin] = useState(false)
 
   useEffect(() => {
     const supabase = createSupabaseClient()
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+
+    const updateProfile = async (userId: string | undefined) => {
+      if (!userId) {
+        setAdmin(false)
+        return
+      }
+      const { data } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .maybeSingle()
+      setAdmin(data?.role === 'admin')
+    }
+
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null)
+      await updateProfile(session?.user?.id)
       setLoading(false)
     })
+
     return () => listener?.subscription.unsubscribe()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin: admin }}>
       {children}
     </AuthContext.Provider>
   )

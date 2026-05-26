@@ -16,51 +16,18 @@ for (const line of readFileSync(resolve(root, '.env'), 'utf-8').split('\n')) {
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL
 const serviceKey = process.env.SUPABASE_SERVICE_KEY
+const adminEmail = process.env.SEED_ADMIN_EMAIL
+const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'admin123456'
 
 if (!supabaseUrl || !serviceKey) {
-  console.error(
-    'Missing VITE_SUPABASE_URL or SUPABASE_SERVICE_KEY in .env',
-  )
+  console.error('Missing VITE_SUPABASE_URL or SUPABASE_SERVICE_KEY in .env')
   process.exit(1)
 }
 
 const supabase = createClient(supabaseUrl, serviceKey)
 
-async function seedProduct(
-  name: string,
-  description: string,
-  category: string,
-  variants: { name: string; price: number; imageUrl: string }[],
-) {
-  const { data: product, error: productError } = await supabase
-    .from('products')
-    .insert({ name, description, category })
-    .select()
-    .single()
-
-  if (productError) {
-    console.error(`Failed to create product "${name}":`, productError)
-    return
-  }
-
-  const { error: variantError } = await supabase
-    .from('product_variants')
-    .insert(
-      variants.map((v) => ({
-        product_id: product.id,
-        name: v.name,
-        price: v.price,
-        image_url: v.imageUrl,
-      })),
-    )
-
-  if (variantError) {
-    console.error(`Failed to create variants for "${name}":`, variantError)
-    return
-  }
-
-  console.log(`Created "${name}" (${product.id})`)
-}
+// Idempotent: clear existing products first
+await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000')
 
 const products = [
   {
@@ -90,7 +57,67 @@ const products = [
 ]
 
 for (const p of products) {
-  await seedProduct(p.name, p.description, p.category, p.variants)
+  const { data: product, error: productError } = await supabase
+    .from('products')
+    .insert({ name: p.name, description: p.description, category: p.category })
+    .select()
+    .single()
+
+  if (productError) {
+    console.error(`Failed to create "${p.name}":`, productError.message)
+    continue
+  }
+
+  const { error: variantError } = await supabase
+    .from('product_variants')
+    .insert(
+      p.variants.map((v) => ({
+        product_id: product.id,
+        name: v.name,
+        price: v.price,
+        image_url: v.imageUrl,
+      })),
+    )
+
+  if (variantError) {
+    console.error(`Failed to create variants for "${p.name}":`, variantError.message)
+    continue
+  }
+
+  console.log(`Created "${p.name}" (${product.id})`)
 }
 
-console.log('Done — 2 products seeded.')
+// Create admin user and set their role
+if (adminEmail) {
+  let userId: string | null = null
+
+  const { data: users } = await supabase.auth.admin.listUsers()
+  const existing = users?.users.find((u) => u.email === adminEmail)
+
+  if (existing) {
+    userId = existing.id
+    console.log(`User ${adminEmail} already exists`)
+  } else {
+    const { data, error } = await supabase.auth.admin.createUser({
+      email: adminEmail,
+      password: adminPassword,
+      email_confirm: true,
+    })
+    if (error) {
+      console.error('Failed to create admin user:', error.message)
+    } else {
+      userId = data.user.id
+      console.log(`Created user ${adminEmail}`)
+    }
+  }
+
+  if (userId) {
+    await supabase.from('profiles').upsert(
+      { id: userId, role: 'admin' },
+      { onConflict: 'id' },
+    )
+    console.log(`Admin role set for ${adminEmail}`)
+  }
+}
+
+console.log('Done')
