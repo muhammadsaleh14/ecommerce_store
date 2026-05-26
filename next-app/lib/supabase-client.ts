@@ -1,5 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { setSupabaseClient } from '@ecommerce/shared'
 
 let _client: SupabaseClient | null = null
 
@@ -14,5 +15,6 @@ export function createSupabaseClient(): SupabaseClient {
   }
 
   _client = createBrowserClient(url, key)
+  setSupabaseClient(_client)
   return _client
 }

@@ -4,6 +4,10 @@ let _client: SupabaseClient | null = null
 
 type Env = Record<string, string | undefined>
 
+export function setSupabaseClient(client: SupabaseClient): void {
+  _client = client
+}
+
 export function getSupabase(): SupabaseClient {
   if (!_client) {
     let url = ''
