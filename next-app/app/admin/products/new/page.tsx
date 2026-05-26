@@ -9,7 +9,7 @@ import { BasicFields } from '@/components/admin/BasicFields'
 import { VariantList } from '@/components/admin/VariantList'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { ProductInput } from '@ecommerce/shared'
+import type { ProductInput } from '@/lib/shared/types/product'
 
 interface VariantData {
   name: string

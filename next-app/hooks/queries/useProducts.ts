@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { queryClient } from '@/lib/queryClient'
-import { getProducts, getProduct, addProduct, updateProduct, deleteProduct } from '@ecommerce/shared'
-import type { ProductInput } from '@ecommerce/shared'
+import { getProducts, getProduct, addProduct, updateProduct, deleteProduct } from '@/lib/shared/services/productService'
+import type { ProductInput } from '@/lib/shared/types/product'
 
 const QUERY_KEY = ['products'] as const
 

@@ -1,27 +1,11 @@
 {
   "name": "ecommerce_firebase",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "workspaces": [
-    "packages/*",
-    "next-app"
-  ],
+  "workspaces": ["next-app"],
   "scripts": {
     "dev": "npm run dev -w next-app",
     "build": "npm run build -w next-app",
-    "lint": "eslint .",
-    "seed": "tsx scripts/seed.ts"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^24.12.3",
-    "eslint": "^10.3.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.6.0",
-    "tsx": "^4.22.3",
-    "typescript": "~6.0.2",
-    "typescript-eslint": "^8.59.2"
+    "lint": "npm run lint -w next-app",
+    "seed": "npm run seed -w next-app"
   }
 }
