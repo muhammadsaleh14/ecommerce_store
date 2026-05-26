@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function AdminProductsPage() {
-  const { data: products, isLoading } = useProducts()
+  const { data: products, isLoading, error } = useProducts()
   const deleteMutation = useDeleteProduct()
 
   if (isLoading) {
@@ -23,6 +23,10 @@ export default function AdminProductsPage() {
         </div>
       </div>
     )
+  }
+
+  if (error) {
+    return <p className="text-destructive">Failed to load products: {(error as Error).message}</p>
   }
 
   return (

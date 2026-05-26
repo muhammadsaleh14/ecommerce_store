@@ -2,7 +2,7 @@
 
 import { createContext, useEffect, useState, type ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
-import { createSupabaseClient } from '@/lib/supabase-client'
+import { supabase } from '@/lib/supabase/client'
 
 interface AuthContextValue {
   user: User | null
@@ -22,8 +22,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState(false)
 
   useEffect(() => {
-    const supabase = createSupabaseClient()
-
     const updateProfile = async (userId: string | undefined) => {
       if (!userId) {
         setAdmin(false)
