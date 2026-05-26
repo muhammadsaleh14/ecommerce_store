@@ -1,9 +1,13 @@
-import { supabase } from '@/lib/supabase/client'
+import { getSupabaseClient } from '@/lib/supabase/client'
 import { productSchema, toProduct } from '../types/product'
 import type { Product, ProductInput } from '../types/product'
 
+function db() {
+  return getSupabaseClient()
+}
+
 export const getProducts = async (): Promise<Product[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await db()
     .from('products')
     .select('*, product_variants(*)')
     .order('created_at', { ascending: false })
@@ -13,7 +17,7 @@ export const getProducts = async (): Promise<Product[]> => {
 }
 
 export const getProduct = async (id: string): Promise<Product> => {
-  const { data, error } = await supabase
+  const { data, error } = await db()
     .from('products')
     .select('*, product_variants(*)')
     .eq('id', id)
@@ -26,7 +30,7 @@ export const getProduct = async (id: string): Promise<Product> => {
 export const addProduct = async (input: ProductInput) => {
   const parsed = productSchema.parse(input)
 
-  const { data: product, error: productError } = await supabase
+  const { data: product, error: productError } = await db()
     .from('products')
     .insert({ name: parsed.name, description: parsed.description, category: parsed.category })
     .select()
@@ -41,7 +45,7 @@ export const addProduct = async (input: ProductInput) => {
     image_url: v.imageUrl,
   }))
 
-  const { error: variantError } = await supabase
+  const { error: variantError } = await db()
     .from('product_variants')
     .insert(variants)
 
@@ -52,14 +56,14 @@ export const addProduct = async (input: ProductInput) => {
 export const updateProduct = async (id: string, input: ProductInput) => {
   const parsed = productSchema.parse(input)
 
-  const { error: productError } = await supabase
+  const { error: productError } = await db()
     .from('products')
     .update({ name: parsed.name, description: parsed.description, category: parsed.category })
     .eq('id', id)
 
   if (productError) throw productError
 
-  const { error: deleteError } = await supabase
+  const { error: deleteError } = await db()
     .from('product_variants')
     .delete()
     .eq('product_id', id)
@@ -73,7 +77,7 @@ export const updateProduct = async (id: string, input: ProductInput) => {
     image_url: v.imageUrl,
   }))
 
-  const { error: variantError } = await supabase
+  const { error: variantError } = await db()
     .from('product_variants')
     .insert(variants)
 
@@ -81,6 +85,6 @@ export const updateProduct = async (id: string, input: ProductInput) => {
 }
 
 export const deleteProduct = async (id: string) => {
-  const { error } = await supabase.from('products').delete().eq('id', id)
+  const { error } = await db().from('products').delete().eq('id', id)
   if (error) throw error
 }

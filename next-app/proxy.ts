@@ -1,53 +1,38 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { type NextRequest, NextResponse } from 'next/server'
 
-export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
+function decodeJwtPayload(token: string) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]))
+  } catch {
+    return null
+  }
+}
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+export function proxy(request: NextRequest) {
+  const tokenCookie = request.cookies.get('sb-access-token')
+  const payload = tokenCookie ? decodeJwtPayload(tokenCookie.value) : null
 
-  if (!url || !key) return supabaseResponse;
+  const isExpired = !payload?.exp || Date.now() / 1000 > payload.exp
+  const isAuthed = !isExpired
 
-  const supabase = createServerClient(url, key, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) =>
-          request.cookies.set(name, value),
-        );
-        supabaseResponse = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options),
-        );
-      },
-    },
-  });
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
+  const isLoginPage = request.nextUrl.pathname === '/admin/login'
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
-  const isLoginPage = request.nextUrl.pathname === "/admin/login";
-  console.log("user", user);
-  if (isAdminRoute && !user && !isLoginPage) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/login";
-    return NextResponse.redirect(url);
+  if (isAdminRoute && !isAuthed && !isLoginPage) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/login'
+    return NextResponse.redirect(url)
   }
 
-  if (isLoginPage && user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin/products";
-    return NextResponse.redirect(url);
+  if (isLoginPage && isAuthed) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/products'
+    return NextResponse.redirect(url)
   }
 
-  return supabaseResponse;
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
-};
+  matcher: ['/admin/:path*'],
+}

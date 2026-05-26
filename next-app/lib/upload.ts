@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase/client'
+import { getSupabaseClient } from '@/lib/supabase/client'
 
 const BUCKET = 'product-images'
 
 export async function uploadVariantImage(file: File): Promise<string> {
+  const supabase = getSupabaseClient()
   const ext = file.name.split('.').pop()
   const path = `${crypto.randomUUID()}.${ext}`
 
