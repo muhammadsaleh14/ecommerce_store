@@ -1,5 +1,5 @@
 export { getSupabase, getSupabase as supabase } from './supabase'
 export type { SupabaseClient } from '@supabase/supabase-js'
-export { productSchema, CATEGORIES } from './types/product'
+export { productSchema, CATEGORIES, toProduct } from './types/product'
 export type { Product, ProductInput, Category, ProductVariant } from './types/product'
 export { getProducts, getProduct, addProduct, updateProduct, deleteProduct } from './services/productService'

@@ -21,19 +21,48 @@ export const variantSchema = z.object({
 
 export type ProductVariant = z.infer<typeof variantSchema>
 
-const baseSchema = z.object({
+export const productSchema = z.object({
   name: z.string().min(1, 'Name is required').max(200),
   description: z.string().max(2000).default(''),
   category: z.enum(CATEGORIES).default('other'),
   variants: z.array(variantSchema).min(1, 'At least one variant is required'),
 })
 
-export const productSchema = baseSchema
-
 export type ProductInput = z.infer<typeof productSchema>
 
-export interface Product extends z.infer<typeof productSchema> {
+export const productOutputSchema = productSchema.extend({
+  id: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
+export type Product = z.infer<typeof productOutputSchema>
+
+const mapCategory = (cat: string): Category =>
+  (CATEGORIES as readonly string[]).includes(cat) ? (cat as Category) : 'other'
+
+const mapVariant = (v: { name: string; price: number; image_url: string }) => ({
+  name: v.name,
+  price: v.price,
+  imageUrl: v.image_url,
+})
+
+export function toProduct(row: {
   id: string
-  createdAt: string
-  updatedAt: string
+  name: string
+  description: string
+  category: string
+  created_at: string
+  updated_at: string
+  product_variants: { name: string; price: number; image_url: string }[]
+}): Product {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    category: mapCategory(row.category),
+    variants: row.product_variants.map(mapVariant),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  }
 }
