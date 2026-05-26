@@ -1,5 +1,6 @@
 "use client"
 
+import Link from 'next/link'
 import type { Product } from '@ecommerce/shared'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -38,15 +39,20 @@ export function ProductCard({ product, onDelete }: Props) {
           From ${minPrice.toFixed(2)}
           {maxPrice > minPrice && ` — $${maxPrice.toFixed(2)}`}
         </p>
-        {onDelete && (
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete(product.id)}
-          >
-            Delete
+        <div className="flex gap-2 pt-1">
+          {onDelete && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => onDelete(product.id)}
+            >
+              Delete
+            </Button>
+          )}
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/admin/products/${product.id}/edit`}>Edit</Link>
           </Button>
-        )}
+        </div>
       </CardContent>
     </Card>
   )

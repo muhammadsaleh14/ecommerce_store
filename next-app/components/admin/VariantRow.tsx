@@ -1,8 +1,10 @@
 "use client"
 
+import { useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { uploadVariantImage } from '@/lib/upload'
 
 interface VariantData {
   name: string
@@ -19,6 +21,23 @@ interface Props {
 }
 
 export function VariantRow({ variant, index, canRemove, onChange, onRemove }: Props) {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const url = await uploadVariantImage(file)
+      onChange(index, 'imageUrl', url)
+    } catch {
+      console.error('Upload failed')
+    }
+    setUploading(false)
+  }
+
   return (
     <div className="flex items-center gap-2 border rounded-lg p-3">
       <div className="flex-1 space-y-1">
@@ -42,12 +61,31 @@ export function VariantRow({ variant, index, canRemove, onChange, onRemove }: Pr
         />
       </div>
       <div className="flex-[2] space-y-1">
-        <Label className="text-xs">Image URL</Label>
-        <Input
-          placeholder="https://..."
-          value={variant.imageUrl}
-          onChange={(e) => onChange(index, 'imageUrl', e.target.value)}
-        />
+        <Label className="text-xs">Image</Label>
+        <div className="flex gap-1">
+          <Input
+            placeholder="https://..."
+            value={variant.imageUrl}
+            onChange={(e) => onChange(index, 'imageUrl', e.target.value)}
+            className="flex-1"
+          />
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleUpload}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={uploading}
+            onClick={() => fileRef.current?.click()}
+          >
+            {uploading ? '...' : 'Browse'}
+          </Button>
+        </div>
       </div>
       <Button
         type="button"

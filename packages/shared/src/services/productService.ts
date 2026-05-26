@@ -31,15 +31,8 @@ function mapCategory(cat: string): Category {
   return (CATEGORIES as readonly string[]).includes(cat) ? (cat as Category) : 'other'
 }
 
-export const getProducts = async (): Promise<Product[]> => {
-  const { data, error } = await db()
-    .from('products')
-    .select('*, product_variants(*)')
-    .order('created_at', { ascending: false })
-
-  if (error) throw error
-
-  return (data as DbProduct[]).map((row) => ({
+function toProduct(row: DbProduct): Product {
+  return {
     id: row.id,
     name: row.name,
     description: row.description,
@@ -51,7 +44,28 @@ export const getProducts = async (): Promise<Product[]> => {
     })),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-  }))
+  }
+}
+
+export const getProducts = async (): Promise<Product[]> => {
+  const { data, error } = await db()
+    .from('products')
+    .select('*, product_variants(*)')
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data as DbProduct[]).map(toProduct)
+}
+
+export const getProduct = async (id: string): Promise<Product> => {
+  const { data, error } = await db()
+    .from('products')
+    .select('*, product_variants(*)')
+    .eq('id', id)
+    .single()
+
+  if (error) throw error
+  return toProduct(data as unknown as DbProduct)
 }
 
 export const addProduct = async (input: ProductInput) => {
@@ -77,8 +91,38 @@ export const addProduct = async (input: ProductInput) => {
     .insert(variants)
 
   if (variantError) throw variantError
-
   return product.id
+}
+
+export const updateProduct = async (id: string, input: ProductInput) => {
+  const parsed = productSchema.parse(input)
+
+  const { error: productError } = await db()
+    .from('products')
+    .update({ name: parsed.name, description: parsed.description, category: parsed.category })
+    .eq('id', id)
+
+  if (productError) throw productError
+
+  const { error: deleteError } = await db()
+    .from('product_variants')
+    .delete()
+    .eq('product_id', id)
+
+  if (deleteError) throw deleteError
+
+  const variants = parsed.variants.map((v) => ({
+    product_id: id,
+    name: v.name,
+    price: v.price,
+    image_url: v.imageUrl,
+  }))
+
+  const { error: variantError } = await db()
+    .from('product_variants')
+    .insert(variants)
+
+  if (variantError) throw variantError
 }
 
 export const deleteProduct = async (id: string) => {

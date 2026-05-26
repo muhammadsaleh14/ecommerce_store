@@ -2,17 +2,22 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 let _client: SupabaseClient | null = null
 
+type Env = Record<string, string | undefined>
+
 export function getSupabase(): SupabaseClient {
   if (!_client) {
-    const url =
-      (typeof process !== 'undefined' ? (process.env as Record<string, string>)?.['NEXT_PUBLIC_SUPABASE_URL'] : undefined) ??
-      (typeof import.meta !== 'undefined' ? (import.meta as Record<string, any>).env?.VITE_SUPABASE_URL : undefined) ??
-      ''
+    let url = ''
+    let key = ''
 
-    const key =
-      (typeof process !== 'undefined' ? (process.env as Record<string, string>)?.['NEXT_PUBLIC_SUPABASE_ANON_KEY'] : undefined) ??
-      (typeof import.meta !== 'undefined' ? (import.meta as Record<string, any>).env?.VITE_SUPABASE_ANON_KEY : undefined) ??
-      ''
+    try {
+      url = (process.env as Env).NEXT_PUBLIC_SUPABASE_URL ?? ''
+      key = (process.env as Env).NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+    } catch {
+      try {
+        url = (import.meta as any).env?.VITE_SUPABASE_URL ?? ''
+        key = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY ?? ''
+      } catch {}
+    }
 
     if (!url || !key) {
       throw new Error(
