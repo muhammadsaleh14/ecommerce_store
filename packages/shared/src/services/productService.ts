@@ -1,6 +1,13 @@
-import { supabase } from '../supabase'
+import { getSupabase } from '../supabase'
 import { productSchema, CATEGORIES } from '../types/product'
 import type { Product, ProductInput, Category } from '../types/product'
+import type { SupabaseClient } from '@supabase/supabase-js'
+
+let _supabase: SupabaseClient | null = null
+function db(): SupabaseClient {
+  if (!_supabase) _supabase = getSupabase()
+  return _supabase
+}
 
 interface DbVariant {
   id: string
@@ -25,7 +32,7 @@ function mapCategory(cat: string): Category {
 }
 
 export const getProducts = async (): Promise<Product[]> => {
-  const { data, error } = await supabase
+  const { data, error } = await db()
     .from('products')
     .select('*, product_variants(*)')
     .order('created_at', { ascending: false })
@@ -50,7 +57,7 @@ export const getProducts = async (): Promise<Product[]> => {
 export const addProduct = async (input: ProductInput) => {
   const parsed = productSchema.parse(input)
 
-  const { data: product, error: productError } = await supabase
+  const { data: product, error: productError } = await db()
     .from('products')
     .insert({ name: parsed.name, description: parsed.description, category: parsed.category })
     .select()
@@ -65,7 +72,7 @@ export const addProduct = async (input: ProductInput) => {
     image_url: v.imageUrl,
   }))
 
-  const { error: variantError } = await supabase
+  const { error: variantError } = await db()
     .from('product_variants')
     .insert(variants)
 
@@ -75,6 +82,6 @@ export const addProduct = async (input: ProductInput) => {
 }
 
 export const deleteProduct = async (id: string) => {
-  const { error } = await supabase.from('products').delete().eq('id', id)
+  const { error } = await db().from('products').delete().eq('id', id)
   if (error) throw error
 }

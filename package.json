@@ -5,11 +5,11 @@
   "type": "module",
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "next-app"
   ],
   "scripts": {
-    "dev": "npm run dev -w apps/admin",
-    "build": "npm run build -w apps/admin",
+    "dev": "npm run dev -w next-app",
+    "build": "npm run build -w next-app",
     "lint": "eslint .",
     "seed": "tsx scripts/seed.ts"
   },
