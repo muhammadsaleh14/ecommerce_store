@@ -112,11 +112,14 @@ if (adminEmail) {
   }
 
   if (userId) {
-    await supabase.from('profiles').upsert(
-      { id: userId, role: 'admin' },
-      { onConflict: 'id' },
-    )
-    console.log(`Admin role set for ${adminEmail}`)
+    const { error: updateError } = await supabase.auth.admin.updateUserById(userId, {
+      app_metadata: { role: 'admin' },
+    })
+    if (updateError) {
+      console.error('Failed to set admin role:', updateError.message)
+    } else {
+      console.log(`Admin role set for ${adminEmail}`)
+    }
   }
 }
 

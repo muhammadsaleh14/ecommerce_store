@@ -22,22 +22,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [admin, setAdmin] = useState(false)
 
   useEffect(() => {
-    const updateProfile = async (userId: string | undefined) => {
-      if (!userId) {
-        setAdmin(false)
-        return
-      }
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .maybeSingle()
-      setAdmin(data?.role === 'admin')
-    }
-
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null)
-      await updateProfile(session?.user?.id)
+      setAdmin(session?.user?.app_metadata?.role === 'admin')
       setLoading(false)
     })
 
