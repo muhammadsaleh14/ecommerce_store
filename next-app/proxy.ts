@@ -1,20 +1,21 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { getServerClient } from '@/lib/supabase/server'
 
-function decodeJwtPayload(token: string) {
-  try {
-    return JSON.parse(atob(token.split('.')[1]))
-  } catch {
-    return null
-  }
-}
+export async function proxy(request: NextRequest) {
+  const response = NextResponse.next()
 
-export function proxy(request: NextRequest) {
-  const tokenCookie = request.cookies.get('sb-access-token')
-  const payload = tokenCookie ? decodeJwtPayload(tokenCookie.value) : null
+  const supabase = await getServerClient({
+    getAll: () => request.cookies.getAll(),
+    setAll: (cookiesToSet) => {
+      cookiesToSet.forEach(({ name, value, options }) =>
+        response.cookies.set(name, value, options),
+      )
+    },
+  })
 
-  const isExpired = !payload?.exp || Date.now() / 1000 > payload.exp
-  const isAuthed = !isExpired
+  const { data: { session } } = await supabase.auth.getSession()
 
+  const isAuthed = !!session
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
   const isLoginPage = request.nextUrl.pathname === '/admin/login'
 
@@ -30,7 +31,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  return NextResponse.next()
+  return response
 }
 
 export const config = {

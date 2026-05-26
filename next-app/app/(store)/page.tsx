@@ -1,12 +1,12 @@
 export const dynamic = 'force-dynamic'
 
-import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { getServerClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 
 export default async function HomePage() {
-  const supabase = await createSupabaseServerClient()
+  const supabase = await getServerClient()
   const { data: products } = await supabase
     .from('products')
     .select('*, product_variants(*)')

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { createSupabaseServerClient } from '@/lib/supabase-server'
+import { getServerClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -12,7 +12,7 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const supabase = await createSupabaseServerClient()
+  const supabase = await getServerClient()
 
   const { data: product } = await supabase
     .from('products')
