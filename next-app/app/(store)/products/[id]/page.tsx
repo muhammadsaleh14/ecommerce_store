@@ -33,7 +33,7 @@ export default async function ProductDetailPage({
   const prices = variants.map((v: any) => v.price)
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
-  const firstImage = variants[0]?.image_url || '/placeholder.svg'
+  const firstImage = variants.find((v: any) => v.image_url)?.image_url || '/placeholder.svg'
 
   return (
     <div className="flex flex-col min-h-screen">

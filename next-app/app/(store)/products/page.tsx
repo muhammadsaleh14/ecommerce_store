@@ -34,7 +34,7 @@ export default async function ProductsPage() {
               const prices = product.product_variants?.map((v: any) => v.price) || []
               const minPrice = Math.min(...prices)
               const maxPrice = Math.max(...prices)
-              const firstImage = product.product_variants?.[0]?.image_url || '/placeholder.svg'
+              const firstImage = product.product_variants?.find((v: any) => v.image_url)?.image_url || '/placeholder.svg'
 
               return (
                 <Link key={product.id} href={`/products/${product.id}`}>

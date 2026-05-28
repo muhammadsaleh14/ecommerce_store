@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useRef, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAddProduct } from '@/hooks/queries/useProducts'
 import { uploadVariantImage } from '@/lib/upload'
@@ -21,7 +21,6 @@ interface VariantData {
 export default function AddProductPage() {
   const router = useRouter()
   const addMutation = useAddProduct()
-  const pendingFiles = useRef<Map<number, File>>(new Map())
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -29,6 +28,7 @@ export default function AddProductPage() {
   const [variants, setVariants] = useState<VariantData[]>([
     { name: '', price: 0, imageUrl: '' },
   ])
+  const [pendingFiles, setPendingFiles] = useState<(File | null)[]>([null])
   const [submitting, setSubmitting] = useState(false)
 
   const handleVariantChange = (idx: number, field: keyof VariantData, value: string) => {
@@ -42,16 +42,21 @@ export default function AddProductPage() {
   }
 
   const handleFilePick = (idx: number, file: File) => {
-    pendingFiles.current.set(idx, file)
+    setPendingFiles((prev) => {
+      const next = [...prev]
+      next[idx] = file
+      return next
+    })
   }
 
   const addVariant = () => {
     setVariants([...variants, { name: '', price: 0, imageUrl: '' }])
+    setPendingFiles((prev) => [...prev, null])
   }
 
   const removeVariant = (idx: number) => {
-    pendingFiles.current.delete(idx)
     setVariants(variants.filter((_, i) => i !== idx))
+    setPendingFiles((prev) => prev.filter((_, i) => i !== idx))
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -64,7 +69,7 @@ export default function AddProductPage() {
       if (!v.name.trim()) continue
 
       let imageUrl = v.imageUrl
-      const file = pendingFiles.current.get(i)
+      const file = pendingFiles[i]
       if (file) {
         imageUrl = await uploadVariantImage(file)
       }
@@ -109,6 +114,7 @@ export default function AddProductPage() {
               onChange={handleVariantChange}
               onAdd={addVariant}
               onRemove={removeVariant}
+              onFilePick={handleFilePick}
             />
 
             <Button type="submit" disabled={submitting}>

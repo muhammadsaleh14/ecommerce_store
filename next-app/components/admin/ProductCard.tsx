@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function ProductCard({ product, onDelete }: Props) {
-  const firstImage = product.variants[0]?.imageUrl || '/placeholder.svg'
+  const firstImage = product.variants.find((v) => v.imageUrl)?.imageUrl || '/placeholder.svg'
   const prices = product.variants.map((v) => v.price)
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
