@@ -22,7 +22,7 @@ export function ProductCard({ product, onDelete }: Props) {
       <img
         src={firstImage}
         alt={product.name}
-        className="h-48 w-full object-cover"
+        className="h-48 w-full object-contain bg-muted"
       />
       <CardContent className="p-4 space-y-2">
         <div className="flex items-center gap-2">

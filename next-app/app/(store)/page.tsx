@@ -53,7 +53,7 @@ export default async function HomePage() {
                 return (
                   <Link key={product.id} href={`/products/${product.id}`}>
                     <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
-                      <img src={firstImage} alt={product.name} className="h-48 w-full object-cover" />
+                      <img src={firstImage} alt={product.name} className="h-48 w-full object-contain bg-muted" />
                       <CardContent className="p-4 space-y-2">
                         <Badge variant="secondary">{product.category}</Badge>
                         <h3 className="font-semibold text-lg">{product.name}</h3>
