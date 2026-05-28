@@ -20,9 +20,9 @@ export default async function ProductDetailPage({
 
   if (!product) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <h1 className="text-2xl font-extrabold">Product not found</h1>
-        <Link href="/products" className="underline font-bold">Back to products</Link>
+      <div className="flex flex-col items-center justify-center gap-4 py-20">
+        <h1 className="font-['Playfair_Display',_serif] text-xl font-bold">Product not found</h1>
+        <Link href="/products" className="underline text-sm font-bold">Back to products</Link>
       </div>
     )
   }
@@ -34,32 +34,32 @@ export default async function ProductDetailPage({
   const firstImage = variants.find((v: any) => v.image_url)?.image_url
 
   return (
-    <section className="px-[10%] py-16">
-      <Link href="/products" className="inline-block mb-8 text-sm font-bold uppercase underline">
+    <section className="px-[10%] py-12">
+      <Link href="/products" className="inline-block mb-6 text-[11px] font-bold uppercase underline">
         &larr; Back to products
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div
-          className="h-[500px] border-2 border-black shadow-[6px_6px_0px_#000] bg-cover bg-center"
+          className="h-[400px] border-2 border-black shadow-[4px_4px_0px_#000] bg-cover bg-center"
           style={{ backgroundImage: firstImage ? `url('${firstImage}')` : undefined }}
         >
           {!firstImage && (
-            <div className="w-full h-full flex items-center justify-center bg-neutral-200 text-black/40 text-sm font-bold uppercase">
+            <div className="w-full h-full flex items-center justify-center bg-neutral-200 text-black/40 text-xs font-bold uppercase">
               No Image
             </div>
           )}
         </div>
 
-        <div className="space-y-5">
-          <span className="inline-block text-xs font-bold uppercase border-2 border-black px-2 py-0.5">
+        <div className="space-y-4">
+          <span className="inline-block text-[10px] font-bold uppercase border-2 border-black px-1.5 py-0.5">
             {product.category}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold">{product.name}</h1>
+          <h1 className="font-['Playfair_Display',_serif] text-2xl sm:text-3xl font-bold">{product.name}</h1>
           {product.description && (
-            <p className="text-base font-bold text-black/70">{product.description}</p>
+            <p className="text-sm leading-relaxed text-black/70">{product.description}</p>
           )}
-          <p className="text-2xl font-extrabold text-[#FF006E]">
+          <p className="text-xl font-bold text-[#FF006E]">
             Rs. {minPrice.toFixed(2).replace('.00', '')}
             {maxPrice > minPrice && ` — Rs. ${maxPrice.toFixed(2).replace('.00', '')}`}
           </p>

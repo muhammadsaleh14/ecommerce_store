@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Syne } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,14 +12,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const syne = Syne({
-  variable: "--font-syne",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "700", "800"],
+});
+
+const lato = Lato({
+  variable: "--font-lato",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "GULPOSH — Pakistani Fashion Store",
+  title: "Women Couture — Pakistani Fashion Store",
   description: "Pakistani fashion store featuring embroidered chiffon and luxury lawn suits.",
 };
 
@@ -29,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${syne.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${lato.variable}`}>
       <body>{children}</body>
     </html>
   );
