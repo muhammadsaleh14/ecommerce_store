@@ -2,8 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { getServerClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 
 export default async function ProductsPage() {
   const supabase = await getServerClient()
@@ -13,40 +11,45 @@ export default async function ProductsPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <main className="flex-1 max-w-6xl mx-auto px-4 py-12 w-full">
-        <h1 className="text-3xl font-bold mb-8">All Products</h1>
-
+    <section className="px-[10%] py-16">
+      <h1 className="text-4xl font-extrabold mb-12">All Products</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {!products || products.length === 0 ? (
-          <p className="text-muted-foreground">No products yet.</p>
+          <p className="col-span-full text-black/60">No products yet.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product: any) => {
-              const prices = product.product_variants?.map((v: any) => v.price) || []
-              const minPrice = Math.min(...prices)
-              const maxPrice = Math.max(...prices)
-              const firstImage = product.product_variants?.find((v: any) => v.image_url)?.image_url || '/placeholder.svg'
+          products.map((product: any) => {
+            const prices = product.product_variants?.map((v: any) => v.price) || []
+            const minPrice = Math.min(...prices)
+            const maxPrice = Math.max(...prices)
+            const firstImage = product.product_variants?.find((v: any) => v.image_url)?.image_url
 
-              return (
-                <Link key={product.id} href={`/products/${product.id}`}>
-                  <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
-                    <img src={firstImage} alt={product.name} className="h-48 w-full object-contain bg-muted" />
-                    <CardContent className="p-4 space-y-2">
-                      <Badge variant="secondary">{product.category}</Badge>
-                      <h3 className="font-semibold text-lg">{product.name}</h3>
-                      {product.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
-                      )}
-                      <p className="text-xl font-bold">
-                        From ${minPrice.toFixed(2)}
-                        {maxPrice > minPrice && ` — $${maxPrice.toFixed(2)}`}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              )
-            })}
-          </div>
+            return (
+              <Link key={product.id} href={`/products/${product.id}`}>
+                <div className="bg-white border-2 border-black shadow-[6px_6px_0px_#000] overflow-hidden p-5">
+                  <div
+                    className="h-[400px] mb-5 border-2 border-black bg-cover bg-center"
+                    style={{ backgroundImage: firstImage ? `url('${firstImage}')` : undefined }}
+                  >
+                    {!firstImage && (
+                      <div className="w-full h-full flex items-center justify-center bg-neutral-200 text-black/40 text-sm font-bold uppercase">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+                  <span className="inline-block text-xs font-bold uppercase border-2 border-black px-2 py-0.5 mb-2">
+                    {product.category}
+                  </span>
+                  <h3 className="text-xl font-extrabold mb-2">{product.name}</h3>
+                  <p className="font-extrabold text-lg text-[#FF006E]">
+                    Rs. {minPrice.toFixed(2).replace('.00', '')}
+                    {maxPrice > minPrice && ` — Rs. ${maxPrice.toFixed(2).replace('.00', '')}`}
+                  </p>
+                </div>
+              </Link>
+            )
+          })
         )}
-    </main>
+      </div>
+    </section>
   )
 }

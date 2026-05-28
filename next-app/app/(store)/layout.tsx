@@ -2,15 +2,13 @@ import Link from 'next/link'
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">Store</Link>
-          <nav className="flex gap-4">
-            <Link href="/products" className="text-sm text-muted-foreground hover:text-foreground">Products</Link>
-          </nav>
+    <div className="min-h-screen bg-[#FFF3E0] font-['Syne',_sans-serif]">
+      <nav className="flex items-center justify-between px-[10%] py-8 border-b-2 border-black">
+        <Link href="/" className="text-2xl font-bold tracking-wide">GULPOSH</Link>
+        <div className="flex gap-6 text-xs font-bold uppercase tracking-widest">
+          <Link href="/products" className="hover:text-[#FF006E] transition-colors">Products</Link>
         </div>
-      </header>
+      </nav>
       {children}
     </div>
   )

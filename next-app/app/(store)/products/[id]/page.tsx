@@ -2,8 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { getServerClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import { VariantSelector } from '@/components/store/VariantSelector'
 
 export default async function ProductDetailPage({
@@ -23,8 +21,8 @@ export default async function ProductDetailPage({
   if (!product) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-24">
-        <h1 className="text-2xl font-bold">Product not found</h1>
-        <Link href="/products" className="text-sm text-muted-foreground underline">Back to products</Link>
+        <h1 className="text-2xl font-extrabold">Product not found</h1>
+        <Link href="/products" className="underline font-bold">Back to products</Link>
       </div>
     )
   }
@@ -33,37 +31,42 @@ export default async function ProductDetailPage({
   const prices = variants.map((v: any) => v.price)
   const minPrice = Math.min(...prices)
   const maxPrice = Math.max(...prices)
-  const firstImage = variants.find((v: any) => v.image_url)?.image_url || '/placeholder.svg'
+  const firstImage = variants.find((v: any) => v.image_url)?.image_url
 
   return (
-    <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
-        <Link href="/products" className="text-sm text-muted-foreground hover:text-foreground underline mb-8 inline-block">
-          ← Back to products
-        </Link>
+    <section className="px-[10%] py-16">
+      <Link href="/products" className="inline-block mb-8 text-sm font-bold uppercase underline">
+        &larr; Back to products
+      </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <img
-              src={firstImage}
-              alt={product.name}
-              className="w-full rounded-xl object-cover aspect-square"
-            />
-          </div>
-
-          <div className="space-y-4">
-            <Badge variant="secondary">{product.category}</Badge>
-            <h1 className="text-3xl font-bold">{product.name}</h1>
-            {product.description && (
-              <p className="text-muted-foreground">{product.description}</p>
-            )}
-            <p className="text-2xl font-bold">
-              From ${minPrice.toFixed(2)}
-              {maxPrice > minPrice && ` — $${maxPrice.toFixed(2)}`}
-            </p>
-
-            <VariantSelector variants={variants} />
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div
+          className="h-[500px] border-2 border-black shadow-[6px_6px_0px_#000] bg-cover bg-center"
+          style={{ backgroundImage: firstImage ? `url('${firstImage}')` : undefined }}
+        >
+          {!firstImage && (
+            <div className="w-full h-full flex items-center justify-center bg-neutral-200 text-black/40 text-sm font-bold uppercase">
+              No Image
+            </div>
+          )}
         </div>
-    </main>
+
+        <div className="space-y-5">
+          <span className="inline-block text-xs font-bold uppercase border-2 border-black px-2 py-0.5">
+            {product.category}
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold">{product.name}</h1>
+          {product.description && (
+            <p className="text-base font-bold text-black/70">{product.description}</p>
+          )}
+          <p className="text-2xl font-extrabold text-[#FF006E]">
+            Rs. {minPrice.toFixed(2).replace('.00', '')}
+            {maxPrice > minPrice && ` — Rs. ${maxPrice.toFixed(2).replace('.00', '')}`}
+          </p>
+
+          <VariantSelector variants={variants} />
+        </div>
+      </div>
+    </section>
   )
 }

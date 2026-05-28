@@ -2,8 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { getServerClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 
 export default async function HomePage() {
   const supabase = await getServerClient()
@@ -14,54 +12,68 @@ export default async function HomePage() {
     .limit(6)
 
   return (
-    <main className="flex-1 max-w-6xl mx-auto px-4 py-12 w-full">
-        <section className="mb-12">
-          <h1 className="text-4xl font-bold mb-4">Welcome to the Store</h1>
-          <p className="text-muted-foreground text-lg max-w-xl">
-            Browse our collection of products.
+    <>
+      <section className="flex items-center justify-between px-[10%] min-h-[60vh]">
+        <div className="flex-1 pr-12">
+          <h1 className="text-5xl sm:text-6xl font-extrabold leading-[1.1] mb-5">
+            The Festive Eid Collection
+          </h1>
+          <p className="text-base sm:text-lg font-bold mb-8">
+            Experience the finest craftsmanship with our new embroidered chiffon and luxury lawn suits.
+            Elegance stitched into every thread.
           </p>
-        </section>
+          <Link
+            href="/products"
+            className="inline-block bg-[#FF006E] text-white px-9 py-4 font-bold uppercase tracking-wider text-sm border-2 border-black shadow-[6px_6px_0px_#000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_#000] transition-all"
+          >
+            Shop Collection
+          </Link>
+        </div>
+        <div
+          className="flex-1 h-[500px] rounded-none border-2 border-black shadow-[6px_6px_0px_#000] bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1583391733958-650f0c0850a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')" }}
+        />
+      </section>
 
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Featured Products</h2>
-            <Link href="/products" className="text-sm text-muted-foreground hover:text-foreground underline">
-              View all
-            </Link>
-          </div>
-
-          {!products || products.length === 0 ? (
-            <p className="text-muted-foreground">No products yet.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product: any) => {
-                const prices = product.product_variants?.map((v: any) => v.price) || []
-                const minPrice = Math.min(...prices)
-                const maxPrice = Math.max(...prices)
-                const firstImage = product.product_variants?.find((v: any) => v.image_url)?.image_url || '/placeholder.svg'
-
-                return (
-                  <Link key={product.id} href={`/products/${product.id}`}>
-                    <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
-                      <img src={firstImage} alt={product.name} className="h-48 w-full object-contain bg-muted" />
-                      <CardContent className="p-4 space-y-2">
-                        <Badge variant="secondary">{product.category}</Badge>
-                        <h3 className="font-semibold text-lg">{product.name}</h3>
-                        {product.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
-                        )}
-                        <p className="text-xl font-bold">
-                          From ${minPrice.toFixed(2)}
-                          {maxPrice > minPrice && ` — $${maxPrice.toFixed(2)}`}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                )
-              })}
-            </div>
+      <section className="px-[10%] py-20">
+        <h2 className="text-4xl font-extrabold text-center mb-12">Trending Now</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {(!products || products.length === 0) && (
+            <p className="col-span-full text-center text-black/60">No products yet.</p>
           )}
-        </section>
-    </main>
+          {products?.map((product: any) => {
+            const prices = product.product_variants?.map((v: any) => v.price) || []
+            const minPrice = Math.min(...prices)
+            const maxPrice = Math.max(...prices)
+            const firstImage = product.product_variants?.find((v: any) => v.image_url)?.image_url
+
+            return (
+              <Link key={product.id} href={`/products/${product.id}`}>
+                <div className="bg-white border-2 border-black shadow-[6px_6px_0px_#000] overflow-hidden p-5">
+                  <div
+                    className="h-[400px] mb-5 border-2 border-black bg-cover bg-center"
+                    style={{ backgroundImage: firstImage ? `url('${firstImage}')` : undefined }}
+                  >
+                    {!firstImage && (
+                      <div className="w-full h-full flex items-center justify-center bg-neutral-200 text-black/40 text-sm font-bold uppercase">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+                  <span className="inline-block text-xs font-bold uppercase border-2 border-black px-2 py-0.5 mb-2">
+                    {product.category}
+                  </span>
+                  <h3 className="text-xl font-extrabold mb-2">{product.name}</h3>
+                  <p className="font-extrabold text-lg text-[#FF006E]">
+                    Rs. {minPrice.toFixed(2).replace('.00', '')}
+                    {maxPrice > minPrice && ` — Rs. ${maxPrice.toFixed(2).replace('.00', '')}`}
+                  </p>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      </section>
+    </>
   )
 }
