@@ -22,7 +22,7 @@ export default async function ProductDetailPage({
 
   if (!product) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+      <div className="flex flex-col items-center justify-center gap-4 py-24">
         <h1 className="text-2xl font-bold">Product not found</h1>
         <Link href="/products" className="text-sm text-muted-foreground underline">Back to products</Link>
       </div>
@@ -36,17 +36,7 @@ export default async function ProductDetailPage({
   const firstImage = variants.find((v: any) => v.image_url)?.image_url || '/placeholder.svg'
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">Store</Link>
-          <nav className="flex gap-4">
-            <Link href="/products" className="text-sm text-muted-foreground hover:text-foreground">Products</Link>
-          </nav>
-        </div>
-      </header>
-
-      <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
+    <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
         <Link href="/products" className="text-sm text-muted-foreground hover:text-foreground underline mb-8 inline-block">
           ← Back to products
         </Link>
@@ -74,7 +64,6 @@ export default async function ProductDetailPage({
             <VariantSelector variants={variants} />
           </div>
         </div>
-      </main>
-    </div>
+    </main>
   )
 }

@@ -13,17 +13,7 @@ export default async function ProductsPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">Store</Link>
-          <nav className="flex gap-4">
-            <Link href="/products" className="text-sm text-muted-foreground hover:text-foreground">Products</Link>
-          </nav>
-        </div>
-      </header>
-
-      <main className="flex-1 max-w-6xl mx-auto px-4 py-12 w-full">
+    <main className="flex-1 max-w-6xl mx-auto px-4 py-12 w-full">
         <h1 className="text-3xl font-bold mb-8">All Products</h1>
 
         {!products || products.length === 0 ? (
@@ -57,7 +47,6 @@ export default async function ProductsPage() {
             })}
           </div>
         )}
-      </main>
-    </div>
+    </main>
   )
 }

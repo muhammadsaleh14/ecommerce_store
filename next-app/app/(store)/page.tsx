@@ -14,17 +14,7 @@ export default async function HomePage() {
     .limit(6)
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">Store</Link>
-          <nav className="flex gap-4">
-            <Link href="/products" className="text-sm text-muted-foreground hover:text-foreground">Products</Link>
-          </nav>
-        </div>
-      </header>
-
-      <main className="flex-1 max-w-6xl mx-auto px-4 py-12 w-full">
+    <main className="flex-1 max-w-6xl mx-auto px-4 py-12 w-full">
         <section className="mb-12">
           <h1 className="text-4xl font-bold mb-4">Welcome to the Store</h1>
           <p className="text-muted-foreground text-lg max-w-xl">
@@ -72,7 +62,6 @@ export default async function HomePage() {
             </div>
           )}
         </section>
-      </main>
-    </div>
+    </main>
   )
 }
