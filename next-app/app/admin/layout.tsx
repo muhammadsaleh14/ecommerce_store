@@ -1,13 +1,10 @@
 import { QueryClientProvider } from '@/components/providers/QueryClientProvider'
+import { AdminShell } from '@/components/admin/AdminShell'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider>
-      <div className="min-h-screen bg-gray-50">
-        <main className="max-w-6xl mx-auto px-4 py-8">
-          {children}
-        </main>
-      </div>
+      <AdminShell>{children}</AdminShell>
     </QueryClientProvider>
   )
 }

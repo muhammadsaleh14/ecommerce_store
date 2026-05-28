@@ -1,6 +1,5 @@
 "use client"
 
-import { CATEGORIES } from '@/lib/shared/types/product'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -11,9 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
-const catLabel = (cat: string) =>
-  cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' ')
+import { useCategories } from '@/hooks/queries/useCategories'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface Props {
   name: string
@@ -32,6 +30,8 @@ export function BasicFields({
   onDescriptionChange,
   onCategoryChange,
 }: Props) {
+  const { data: categories, isLoading } = useCategories()
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -63,11 +63,17 @@ export function BasicFields({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {CATEGORIES.map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {catLabel(cat)}
-              </SelectItem>
-            ))}
+            {isLoading ? (
+              <div className="p-2">
+                <Skeleton className="h-8 w-32" />
+              </div>
+            ) : (
+              categories?.map((cat) => (
+                <SelectItem key={cat.slug} value={cat.slug}>
+                  {cat.name}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
       </div>
