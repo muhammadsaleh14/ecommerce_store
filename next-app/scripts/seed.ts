@@ -1,26 +1,33 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 
+function loadEnvFile(path: string) {
+  if (!existsSync(path)) return
+  for (const line of readFileSync(path, 'utf-8').split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const sep = trimmed.indexOf('=')
+    if (sep === -1) continue
+    process.env[trimmed.slice(0, sep).trim()] = trimmed.slice(sep + 1).trim()
+  }
+}
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
 
-for (const line of readFileSync(resolve(root, '.env'), 'utf-8').split('\n')) {
-  const trimmed = line.trim()
-  if (!trimmed || trimmed.startsWith('#')) continue
-  const sep = trimmed.indexOf('=')
-  if (sep === -1) continue
-  process.env[trimmed.slice(0, sep).trim()] = trimmed.slice(sep + 1).trim()
-}
+// Load .env.local first (Next.js), then .env (seed-specific) — later files override
+loadEnvFile(resolve(root, '.env.local'))
+loadEnvFile(resolve(root, '.env'))
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceKey = process.env.SUPABASE_SERVICE_KEY
 const adminEmail = process.env.SEED_ADMIN_EMAIL
 const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'admin123456'
 
 if (!supabaseUrl || !serviceKey) {
-  console.error('Missing VITE_SUPABASE_URL or SUPABASE_SERVICE_KEY in .env')
+  console.error('Missing Supabase URL or SUPABASE_SERVICE_KEY. Check .env.local or .env')
   process.exit(1)
 }
 
