@@ -1,10 +1,9 @@
 "use client"
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { uploadVariantImage } from '@/lib/upload'
 
 interface VariantData {
   name: string
@@ -18,28 +17,37 @@ interface Props {
   canRemove: boolean
   onChange: (index: number, field: keyof VariantData, value: string) => void
   onRemove: (index: number) => void
+  onFilePick?: (index: number, file: File) => void
 }
 
-export function VariantRow({ variant, index, canRemove, onChange, onRemove }: Props) {
+export function VariantRow({ variant, index, canRemove, onChange, onRemove, onFilePick }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
-  const [uploading, setUploading] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // revoke blob URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith('blob:')) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
+
+  const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    setUploading(true)
-    try {
-      const url = await uploadVariantImage(file)
-      onChange(index, 'imageUrl', url)
-    } catch {
-      console.error('Upload failed')
-    }
-    setUploading(false)
+    const blobUrl = URL.createObjectURL(file)
+    const prevPreview = previewUrl
+    setPreviewUrl(blobUrl)
+    if (prevPreview?.startsWith('blob:')) URL.revokeObjectURL(prevPreview)
+
+    onChange(index, 'imageUrl', blobUrl)
+    onFilePick?.(index, file)
   }
 
+  const displayUrl = previewUrl ?? variant.imageUrl
+
   return (
-    <div className="flex items-center gap-2 border rounded-lg p-3">
+    <div className="flex items-start gap-2 border rounded-lg p-3">
       <div className="flex-1 space-y-1">
         <Label className="text-xs">Name</Label>
         <Input
@@ -66,7 +74,10 @@ export function VariantRow({ variant, index, canRemove, onChange, onRemove }: Pr
           <Input
             placeholder="https://..."
             value={variant.imageUrl}
-            onChange={(e) => onChange(index, 'imageUrl', e.target.value)}
+            onChange={(e) => {
+              onChange(index, 'imageUrl', e.target.value)
+              setPreviewUrl(null)
+            }}
             className="flex-1"
           />
           <input
@@ -74,18 +85,24 @@ export function VariantRow({ variant, index, canRemove, onChange, onRemove }: Pr
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleUpload}
+            onChange={handleFilePick}
           />
           <Button
             type="button"
             variant="outline"
             size="sm"
-            disabled={uploading}
             onClick={() => fileRef.current?.click()}
           >
-            {uploading ? '...' : 'Browse'}
+            Browse
           </Button>
         </div>
+        {displayUrl && (
+          <img
+            src={displayUrl}
+            alt="Preview"
+            className="mt-1 h-16 w-16 rounded object-cover border"
+          />
+        )}
       </div>
       <Button
         type="button"

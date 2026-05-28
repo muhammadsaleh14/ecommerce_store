@@ -2,9 +2,10 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, type FormEvent } from 'react'
+import { useState, useRef, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAddProduct } from '@/hooks/queries/useProducts'
+import { uploadVariantImage } from '@/lib/upload'
 import { BasicFields } from '@/components/admin/BasicFields'
 import { VariantList } from '@/components/admin/VariantList'
 import { Button } from '@/components/ui/button'
@@ -20,6 +21,7 @@ interface VariantData {
 export default function AddProductPage() {
   const router = useRouter()
   const addMutation = useAddProduct()
+  const pendingFiles = useRef<Map<number, File>>(new Map())
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -39,11 +41,16 @@ export default function AddProductPage() {
     )
   }
 
+  const handleFilePick = (idx: number, file: File) => {
+    pendingFiles.current.set(idx, file)
+  }
+
   const addVariant = () => {
     setVariants([...variants, { name: '', price: 0, imageUrl: '' }])
   }
 
   const removeVariant = (idx: number) => {
+    pendingFiles.current.delete(idx)
     setVariants(variants.filter((_, i) => i !== idx))
   }
 
@@ -51,18 +58,31 @@ export default function AddProductPage() {
     e.preventDefault()
     setSubmitting(true)
 
+    const finalVariants: ProductInput['variants'] = []
+    for (let i = 0; i < variants.length; i++) {
+      const v = variants[i]
+      if (!v.name.trim()) continue
+
+      let imageUrl = v.imageUrl
+      const file = pendingFiles.current.get(i)
+      if (file) {
+        imageUrl = await uploadVariantImage(file)
+      }
+
+      finalVariants.push({ name: v.name.trim(), price: v.price, imageUrl })
+    }
+
     await addMutation.mutateAsync({
       name,
       description,
       category: category as ProductInput['category'],
-      variants: variants
-        .filter((v) => v.name.trim())
-        .map((v) => ({
-          name: v.name.trim(),
-          price: v.price,
-          imageUrl: v.imageUrl,
-        })),
+      variants: finalVariants,
     })
+
+    // Revoke any leftover blob URLs
+    for (const v of variants) {
+      if (v.imageUrl.startsWith('blob:')) URL.revokeObjectURL(v.imageUrl)
+    }
 
     router.push('/admin/products')
   }

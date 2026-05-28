@@ -15,9 +15,10 @@ interface Props {
   onChange: (index: number, field: keyof VariantData, value: string) => void
   onAdd: () => void
   onRemove: (index: number) => void
+  onFilePick?: (index: number, file: File) => void
 }
 
-export function VariantList({ variants, onChange, onAdd, onRemove }: Props) {
+export function VariantList({ variants, onChange, onAdd, onRemove, onFilePick }: Props) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -37,6 +38,7 @@ export function VariantList({ variants, onChange, onAdd, onRemove }: Props) {
             canRemove={variants.length > 1}
             onChange={onChange}
             onRemove={onRemove}
+            onFilePick={onFilePick}
           />
         ))}
       </CardContent>
