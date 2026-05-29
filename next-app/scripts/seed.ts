@@ -66,7 +66,7 @@ const products = [
 for (const p of products) {
   const { data: product, error: productError } = await supabase
     .from('products')
-    .insert({ name: p.name, description: p.description, category: p.category })
+    .insert({ name: p.name, description: p.description, category: p.category, tenant_id: 'womencouture' })
     .select()
     .single()
 
@@ -120,7 +120,7 @@ if (adminEmail) {
 
   if (userId) {
     const { error: updateError } = await supabase.auth.admin.updateUserById(userId, {
-      app_metadata: { role: 'admin' },
+      app_metadata: { role: 'admin', tenant_id: 'womencouture' },
     })
     if (updateError) {
       console.error('Failed to set admin role:', updateError.message)

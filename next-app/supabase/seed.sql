@@ -1,13 +1,15 @@
-insert into products (name, description, category) values
+insert into products (name, description, category, tenant_id) values
   (
     'Wireless Headphones',
     'Premium noise-cancelling wireless headphones with 30-hour battery life and deep bass.',
-    'electronics'
+    'electronics',
+    'womencouture'
   ),
   (
     'Trail Running Shoes',
     'Lightweight trail running shoes with responsive cushioning and rugged grip for any terrain.',
-    'sports'
+    'sports',
+    'womencouture'
   );
 
 with p as (select id, name from products) insert into product_variants (product_id, name, price)

@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { orderInputSchema, mapOrder, mapOrderItem } from '@/lib/shared/types/order'
 import type { OrderInput, Order, OrderItem } from '@/lib/shared/types/order'
 
-export const submitOrder = async (client: SupabaseClient, input: OrderInput) => {
+export const submitOrder = async (client: SupabaseClient, tenantId: string, input: OrderInput) => {
   const parsed = orderInputSchema.parse(input)
   const total = parsed.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
@@ -14,6 +14,7 @@ export const submitOrder = async (client: SupabaseClient, input: OrderInput) => 
       customer_address: parsed.customerAddress,
       notes: parsed.notes,
       total,
+      tenant_id: tenantId,
     })
     .select()
     .single()
@@ -37,10 +38,11 @@ export const submitOrder = async (client: SupabaseClient, input: OrderInput) => 
   return { orderId: order.id }
 }
 
-export const getOrders = async (client: SupabaseClient): Promise<Order[]> => {
+export const getOrders = async (client: SupabaseClient, tenantId: string): Promise<Order[]> => {
   const { data: rows, error } = await client
     .from('orders')
     .select('*, order_items(*)')
+    .eq('tenant_id', tenantId)
     .order('created_at', { ascending: false })
 
   if (error) throw error
@@ -50,7 +52,11 @@ export const getOrders = async (client: SupabaseClient): Promise<Order[]> => {
   }))
 }
 
-export const updateOrderStatus = async (client: SupabaseClient, id: string, status: string) => {
-  const { error } = await client.from('orders').update({ status }).eq('id', id)
+export const updateOrderStatus = async (client: SupabaseClient, tenantId: string, id: string, status: string) => {
+  const { error } = await client
+    .from('orders')
+    .update({ status })
+    .eq('tenant_id', tenantId)
+    .eq('id', id)
   if (error) throw error
 }

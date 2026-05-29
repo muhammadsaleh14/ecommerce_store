@@ -30,15 +30,16 @@ if (!supabaseUrl || !serviceKey) {
 
 const supabase = createClient(supabaseUrl, serviceKey)
 
+const tenantId = 'womencouture'
 const categories = [
-  { slug: 'electronics', name: 'Electronics', description: 'Electronic devices and accessories' },
-  { slug: 'clothing', name: 'Clothing', description: 'Apparel and fashion items' },
-  { slug: 'home-garden', name: 'Home & Garden', description: 'Home improvement and garden supplies' },
-  { slug: 'books', name: 'Books', description: 'Books and publications' },
-  { slug: 'sports', name: 'Sports', description: 'Sports equipment and gear' },
-  { slug: 'toys', name: 'Toys', description: 'Toys and games' },
-  { slug: 'food-drinks', name: 'Food & Drinks', description: 'Food and beverage items' },
-  { slug: 'other', name: 'Other', description: 'Miscellaneous items' },
+  { slug: 'electronics', name: 'Electronics', description: 'Electronic devices and accessories', tenant_id: tenantId },
+  { slug: 'clothing', name: 'Clothing', description: 'Apparel and fashion items', tenant_id: tenantId },
+  { slug: 'home-garden', name: 'Home & Garden', description: 'Home improvement and garden supplies', tenant_id: tenantId },
+  { slug: 'books', name: 'Books', description: 'Books and publications', tenant_id: tenantId },
+  { slug: 'sports', name: 'Sports', description: 'Sports equipment and gear', tenant_id: tenantId },
+  { slug: 'toys', name: 'Toys', description: 'Toys and games', tenant_id: tenantId },
+  { slug: 'food-drinks', name: 'Food & Drinks', description: 'Food and beverage items', tenant_id: tenantId },
+  { slug: 'other', name: 'Other', description: 'Miscellaneous items', tenant_id: tenantId },
 ]
 
 for (const cat of categories) {

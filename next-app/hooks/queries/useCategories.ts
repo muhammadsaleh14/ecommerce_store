@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { getSupabaseClient } from '@/lib/supabase/client'
 import { getCategories } from '@/lib/shared/services/categoryService'
-
-const QUERY_KEY = ['categories'] as const
+import { useAuth } from '@/hooks/useAuth'
 
 export function useCategories() {
+  const { tenantId } = useAuth()
   return useQuery({
-    queryKey: QUERY_KEY,
-    queryFn: () => getCategories(getSupabaseClient()),
+    queryKey: ['categories', tenantId],
+    queryFn: () => getCategories(getSupabaseClient(), tenantId!),
+    enabled: !!tenantId,
   })
 }

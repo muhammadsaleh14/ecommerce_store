@@ -2,10 +2,11 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { productSchema, toProduct } from '../types/product'
 import type { Product, ProductInput } from '../types/product'
 
-export const getProducts = async (client: SupabaseClient, limit?: number): Promise<Product[]> => {
+export const getProducts = async (client: SupabaseClient, tenantId: string, limit?: number): Promise<Product[]> => {
   let query = client
     .from('products')
     .select('*, product_variants(*)')
+    .eq('tenant_id', tenantId)
     .order('created_at', { ascending: false })
 
   if (limit) query = query.limit(limit)
@@ -16,10 +17,11 @@ export const getProducts = async (client: SupabaseClient, limit?: number): Promi
   return (data ?? []).map((row) => toProduct(row as Parameters<typeof toProduct>[0]))
 }
 
-export const getProduct = async (client: SupabaseClient, id: string): Promise<Product> => {
+export const getProduct = async (client: SupabaseClient, tenantId: string, id: string): Promise<Product> => {
   const { data, error } = await client
     .from('products')
     .select('*, product_variants(*)')
+    .eq('tenant_id', tenantId)
     .eq('id', id)
     .single()
 
@@ -27,12 +29,12 @@ export const getProduct = async (client: SupabaseClient, id: string): Promise<Pr
   return toProduct(data as unknown as Parameters<typeof toProduct>[0])
 }
 
-export const addProduct = async (client: SupabaseClient, input: ProductInput) => {
+export const addProduct = async (client: SupabaseClient, tenantId: string, input: ProductInput) => {
   const parsed = productSchema.parse(input)
 
   const { data: product, error: productError } = await client
     .from('products')
-    .insert({ name: parsed.name, description: parsed.description, category: parsed.category })
+    .insert({ name: parsed.name, description: parsed.description, category: parsed.category, tenant_id: tenantId })
     .select()
     .single()
 
@@ -53,12 +55,13 @@ export const addProduct = async (client: SupabaseClient, input: ProductInput) =>
   return product.id
 }
 
-export const updateProduct = async (client: SupabaseClient, id: string, input: ProductInput) => {
+export const updateProduct = async (client: SupabaseClient, tenantId: string, id: string, input: ProductInput) => {
   const parsed = productSchema.parse(input)
 
   const { error: productError } = await client
     .from('products')
     .update({ name: parsed.name, description: parsed.description, category: parsed.category })
+    .eq('tenant_id', tenantId)
     .eq('id', id)
 
   if (productError) throw productError
@@ -84,7 +87,11 @@ export const updateProduct = async (client: SupabaseClient, id: string, input: P
   if (variantError) throw variantError
 }
 
-export const deleteProduct = async (client: SupabaseClient, id: string) => {
-  const { error } = await client.from('products').delete().eq('id', id)
+export const deleteProduct = async (client: SupabaseClient, tenantId: string, id: string) => {
+  const { error } = await client
+    .from('products')
+    .delete()
+    .eq('tenant_id', tenantId)
+    .eq('id', id)
   if (error) throw error
 }

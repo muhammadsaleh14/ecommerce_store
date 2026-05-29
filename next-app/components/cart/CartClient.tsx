@@ -7,7 +7,7 @@ import { getSupabaseClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { Trash2, Minus, Plus } from 'lucide-react'
 
-export function CartClient() {
+export function CartClient({ tenantId }: { tenantId: string }) {
   const { items, total, updateQuantity, removeItem, clearCart } = useCart()
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -23,7 +23,7 @@ export function CartClient() {
     setSubmitting(true)
     setError('')
     try {
-      const result = await submitOrder(getSupabaseClient(), {
+      const result = await submitOrder(getSupabaseClient(), tenantId, {
         customerName: name,
         customerPhone: phone,
         customerAddress: address,
