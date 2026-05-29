@@ -12,6 +12,35 @@ export function ProductGallery({ product }: { product: any }) {
   const imageUrl = variant?.image_url
   const { addItem } = useCart()
 
+  if (!variants.length) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div
+          className="h-[400px] bg-cover bg-center"
+          style={{
+            border: `2px solid ${theme.borderColor}`,
+            boxShadow: theme.shadow,
+          }}
+        >
+          <div className="w-full h-full flex items-center justify-center bg-neutral-200 text-black/40 text-xs font-bold uppercase">
+            No Image
+          </div>
+        </div>
+        <div className="space-y-4">
+          <span
+            className="inline-block text-[10px] font-bold uppercase px-1.5 py-0.5"
+            style={{ border: `2px solid ${theme.borderColor}` }}
+          >
+            {product.category}
+          </span>
+          <h1 className="font-['Playfair_Display',_serif] text-2xl sm:text-3xl font-bold">{product.name}</h1>
+          {product.description && <p className="text-sm leading-relaxed" style={{ color: 'rgba(0,0,0,0.7)' }}>{product.description}</p>}
+          <p className="text-sm text-black/60">No variants available.</p>
+        </div>
+      </div>
+    )
+  }
+
   const handleAdd = () => {
     addItem({
       variantId: variant.id,

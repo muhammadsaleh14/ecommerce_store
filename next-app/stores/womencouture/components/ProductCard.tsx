@@ -4,8 +4,8 @@ import Link from 'next/link'
 export function ProductCard({ product }: { product: any }) {
   const { theme, content } = config
   const prices = product.product_variants?.map((v: any) => v.price) || []
-  const minPrice = Math.min(...prices)
-  const maxPrice = Math.max(...prices)
+  const minPrice = prices.length ? Math.min(...prices) : null
+  const maxPrice = prices.length ? Math.max(...prices) : null
   const firstImage = product.product_variants?.find((v: any) => v.image_url)?.image_url
 
   return (
@@ -39,10 +39,12 @@ export function ProductCard({ product }: { product: any }) {
           {product.category}
         </span>
         <h3 className="font-['Playfair_Display',_serif] text-base font-bold mb-1">{product.name}</h3>
-        <p className="font-bold text-sm" style={{ color: theme.accent }}>
-          {content.currency} {minPrice.toFixed(2).replace('.00', '')}
-          {maxPrice > minPrice && ` — ${content.currency} ${maxPrice.toFixed(2).replace('.00', '')}`}
-        </p>
+        {minPrice !== null && (
+          <p className="font-bold text-sm" style={{ color: theme.accent }}>
+            {content.currency} {minPrice.toFixed(2).replace('.00', '')}
+            {maxPrice !== minPrice && ` — ${content.currency} ${maxPrice!.toFixed(2).replace('.00', '')}`}
+          </p>
+        )}
       </div>
     </Link>
   )
