@@ -21,7 +21,12 @@ export async function getServerClient(cookieAdapter?: CookieAdapter) {
     const store = await cookies()
     getAll = () => store.getAll()
     setAll = (cookiesToSet) => {
-      cookiesToSet.forEach(({ name, value, options }) => store.set(name, value, options))
+      try {
+        cookiesToSet.forEach(({ name, value, options }) => store.set(name, value, options))
+      } catch {
+        // Called from a Server Component — can be ignored when middleware
+        // handles session refresh (proxy.ts does).
+      }
     }
   }
 
