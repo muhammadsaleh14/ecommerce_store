@@ -35,7 +35,6 @@ export interface StorePages {
 export interface StoreComponents {
   Layout: (props: { children: ReactNode }) => ReactNode
   ProductCard: (props: { product: AnyData }) => ReactNode
-  VariantSelector: (props: { variants: AnyData[] }) => ReactNode
 }
 
 export interface StoreDefinition {

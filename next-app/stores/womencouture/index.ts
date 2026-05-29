@@ -5,7 +5,6 @@ import { HomePage } from './pages/HomePage'
 import { ProductsPage } from './pages/ProductsPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ProductCard } from './components/ProductCard'
-import { VariantSelector } from './components/VariantSelector'
 import type { StoreDefinition } from '../types'
 
 const store: StoreDefinition = {
@@ -20,7 +19,6 @@ const store: StoreDefinition = {
   components: {
     Layout,
     ProductCard,
-    VariantSelector,
   },
 }
 
