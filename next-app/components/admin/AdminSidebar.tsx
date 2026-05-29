@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Package, Tags, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Package, Tags, ShoppingBag, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
 const links = [
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/categories', label: 'Categories', icon: Tags },
+  { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
 ]
 
 export function AdminSidebar() {
