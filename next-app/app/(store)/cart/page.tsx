@@ -1,8 +1,8 @@
 export const dynamic = 'force-dynamic'
 
 import { CartClient } from '@/components/cart/CartClient'
-import { getStoreId } from '@/stores/registry'
+import { getTenantId } from '@/tenants/registry'
 
 export default function CartPage() {
-  return <CartClient tenantId={getStoreId()} />
+  return <CartClient tenantId={getTenantId()} />
 }

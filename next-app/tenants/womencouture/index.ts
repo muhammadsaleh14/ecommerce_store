@@ -5,9 +5,9 @@ import { HomePage } from './pages/HomePage'
 import { ProductsPage } from './pages/ProductsPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ProductCard } from './components/ProductCard'
-import type { StoreDefinition } from '../types'
+import type { TenantDefinition } from '../types'
 
-const store: StoreDefinition = {
+const tenant: TenantDefinition = {
   id: config.content.name.toLowerCase().replace(/\s+/g, ''),
   theme: config.theme,
   content: config.content,
@@ -22,5 +22,5 @@ const store: StoreDefinition = {
   },
 }
 
-export default store
+export default tenant
 export { config }

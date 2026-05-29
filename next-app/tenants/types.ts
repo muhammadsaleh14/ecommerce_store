@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react'
 
-export interface StoreTheme {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyData = any
+
+export interface TenantTheme {
   bg: string
   accent: string
   borderColor: string
@@ -9,7 +12,7 @@ export interface StoreTheme {
   borderRadius: string
 }
 
-export interface StoreContent {
+export interface TenantContent {
   name: string
   tagline: string
   currency: string
@@ -23,24 +26,21 @@ export interface StoreContent {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyData = any
-
-export interface StorePages {
+export interface TenantPages {
   HomePage: (props: { products: AnyData[] }) => ReactNode
   ProductsPage: (props: { products: AnyData[] }) => ReactNode
   ProductDetailPage: (props: { product: AnyData }) => ReactNode
 }
 
-export interface StoreComponents {
+export interface TenantComponents {
   Layout: (props: { children: ReactNode }) => ReactNode
   ProductCard: (props: { product: AnyData }) => ReactNode
 }
 
-export interface StoreDefinition {
+export interface TenantDefinition {
   id: string
-  theme: StoreTheme
-  content: StoreContent
-  pages: StorePages
-  components: StoreComponents
+  theme: TenantTheme
+  content: TenantContent
+  pages: TenantPages
+  components: TenantComponents
 }

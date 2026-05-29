@@ -1,6 +1,6 @@
-import type { StoreTheme, StoreContent } from '../types'
+import type { TenantTheme, TenantContent } from '../types'
 
-export const config: { theme: StoreTheme; content: StoreContent } = {
+export const config: { theme: TenantTheme; content: TenantContent } = {
   theme: {
     bg: '#FFF3E0',
     accent: '#FF006E',
@@ -16,12 +16,10 @@ export const config: { theme: StoreTheme; content: StoreContent } = {
     hero: {
       title: 'Where Tradition\nMeets Trend',
       badge: 'Eid Collection 2026',
-      subtitle:
-        'Discover Pakistani fashion that celebrates your heritage. Embroidered chiffons, luxury lawns, and unstitched fabrics — crafted for the modern woman.',
+      subtitle: 'Discover Pakistani fashion that celebrates your heritage. Embroidered chiffons, luxury lawns, and unstitched fabrics — crafted for the modern woman.',
       cta: 'Shop Now',
       ctaSecondary: 'Explore Collection',
-      image:
-        'https://images.unsplash.com/photo-1583391733958-650f0c0850a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1583391733958-650f0c0850a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     },
   },
 }
