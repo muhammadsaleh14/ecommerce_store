@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { config } from '../config'
+import { useCart } from '@/lib/context/cart'
 
 export function ProductGallery({ product }: { product: any }) {
   const { theme, content } = config
@@ -9,6 +10,18 @@ export function ProductGallery({ product }: { product: any }) {
   const [selected, setSelected] = useState(0)
   const variant = variants[selected]
   const imageUrl = variant?.image_url
+  const { addItem } = useCart()
+
+  const handleAdd = () => {
+    addItem({
+      variantId: variant.id,
+      productId: product.id,
+      productName: product.name,
+      variantName: variant.name,
+      price: variant.price,
+      imageUrl: variant.image_url || '',
+    })
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -63,6 +76,19 @@ export function ProductGallery({ product }: { product: any }) {
               ))}
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={handleAdd}
+            className="w-full text-white px-6 py-3 font-bold uppercase tracking-wider text-xs transition-all hover:translate-x-[-2px] hover:translate-y-[-2px]"
+            style={{
+              backgroundColor: theme.accent,
+              border: `2px solid ${theme.borderColor}`,
+              boxShadow: `5px 5px 0px ${theme.borderColor}`,
+            }}
+          >
+            Add to Cart
+          </button>
 
           <div className="pt-4 border-t-2" style={{ borderColor: theme.borderColor }}>
             <p className="text-[10px] font-bold uppercase mb-1">Selected</p>
