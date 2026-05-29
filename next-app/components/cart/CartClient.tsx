@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useCart } from '@/lib/context/cart'
-import { submitOrder } from '@/lib/actions/order'
+import { placeOrder } from '@/lib/actions/order'
 import Link from 'next/link'
 import { Trash2, Minus, Plus } from 'lucide-react'
 
@@ -22,7 +22,7 @@ export function CartClient() {
     setSubmitting(true)
     setError('')
     try {
-      const result = await submitOrder({
+      const result = await placeOrder({
         customerName: name,
         customerPhone: phone,
         customerAddress: address,

@@ -1,13 +1,9 @@
-import { getSupabaseClient } from '@/lib/supabase/client'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { productSchema, toProduct } from '../types/product'
 import type { Product, ProductInput } from '../types/product'
 
-function db() {
-  return getSupabaseClient()
-}
-
-export const getProducts = async (): Promise<Product[]> => {
-  const { data, error } = await db()
+export const getProducts = async (client: SupabaseClient): Promise<Product[]> => {
+  const { data, error } = await client
     .from('products')
     .select('*, product_variants(*)')
     .order('created_at', { ascending: false })
@@ -16,8 +12,8 @@ export const getProducts = async (): Promise<Product[]> => {
   return (data ?? []).map((row) => toProduct(row as Parameters<typeof toProduct>[0]))
 }
 
-export const getProduct = async (id: string): Promise<Product> => {
-  const { data, error } = await db()
+export const getProduct = async (client: SupabaseClient, id: string): Promise<Product> => {
+  const { data, error } = await client
     .from('products')
     .select('*, product_variants(*)')
     .eq('id', id)
@@ -27,10 +23,10 @@ export const getProduct = async (id: string): Promise<Product> => {
   return toProduct(data as unknown as Parameters<typeof toProduct>[0])
 }
 
-export const addProduct = async (input: ProductInput) => {
+export const addProduct = async (client: SupabaseClient, input: ProductInput) => {
   const parsed = productSchema.parse(input)
 
-  const { data: product, error: productError } = await db()
+  const { data: product, error: productError } = await client
     .from('products')
     .insert({ name: parsed.name, description: parsed.description, category: parsed.category })
     .select()
@@ -45,7 +41,7 @@ export const addProduct = async (input: ProductInput) => {
     image_url: v.imageUrl,
   }))
 
-  const { error: variantError } = await db()
+  const { error: variantError } = await client
     .from('product_variants')
     .insert(variants)
 
@@ -53,17 +49,17 @@ export const addProduct = async (input: ProductInput) => {
   return product.id
 }
 
-export const updateProduct = async (id: string, input: ProductInput) => {
+export const updateProduct = async (client: SupabaseClient, id: string, input: ProductInput) => {
   const parsed = productSchema.parse(input)
 
-  const { error: productError } = await db()
+  const { error: productError } = await client
     .from('products')
     .update({ name: parsed.name, description: parsed.description, category: parsed.category })
     .eq('id', id)
 
   if (productError) throw productError
 
-  const { error: deleteError } = await db()
+  const { error: deleteError } = await client
     .from('product_variants')
     .delete()
     .eq('product_id', id)
@@ -77,14 +73,14 @@ export const updateProduct = async (id: string, input: ProductInput) => {
     image_url: v.imageUrl,
   }))
 
-  const { error: variantError } = await db()
+  const { error: variantError } = await client
     .from('product_variants')
     .insert(variants)
 
   if (variantError) throw variantError
 }
 
-export const deleteProduct = async (id: string) => {
-  const { error } = await db().from('products').delete().eq('id', id)
+export const deleteProduct = async (client: SupabaseClient, id: string) => {
+  const { error } = await client.from('products').delete().eq('id', id)
   if (error) throw error
 }

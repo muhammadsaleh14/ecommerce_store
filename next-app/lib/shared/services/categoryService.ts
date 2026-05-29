@@ -1,12 +1,8 @@
-import { getSupabaseClient } from '@/lib/supabase/client'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Category } from '../types/category'
 
-function db() {
-  return getSupabaseClient()
-}
-
-export const getCategories = async (): Promise<Category[]> => {
-  const { data, error } = await db()
+export const getCategories = async (client: SupabaseClient): Promise<Category[]> => {
+  const { data, error } = await client
     .from('categories')
     .select('*')
     .order('slug', { ascending: true })
@@ -19,8 +15,8 @@ export const getCategories = async (): Promise<Category[]> => {
   }))
 }
 
-export const addCategory = async (input: { slug: string; name: string; description?: string }) => {
-  const { error } = await db().from('categories').insert({
+export const addCategory = async (client: SupabaseClient, input: { slug: string; name: string; description?: string }) => {
+  const { error } = await client.from('categories').insert({
     slug: input.slug,
     name: input.name,
     description: input.description ?? null,
@@ -28,12 +24,12 @@ export const addCategory = async (input: { slug: string; name: string; descripti
   if (error) throw error
 }
 
-export const updateCategory = async (slug: string, input: { name?: string; description?: string }) => {
-  const { error } = await db().from('categories').update(input).eq('slug', slug)
+export const updateCategory = async (client: SupabaseClient, slug: string, input: { name?: string; description?: string }) => {
+  const { error } = await client.from('categories').update(input).eq('slug', slug)
   if (error) throw error
 }
 
-export const deleteCategory = async (slug: string) => {
-  const { error } = await db().from('categories').delete().eq('slug', slug)
+export const deleteCategory = async (client: SupabaseClient, slug: string) => {
+  const { error } = await client.from('categories').delete().eq('slug', slug)
   if (error) throw error
 }

@@ -1,42 +1,10 @@
 "use server"
 
 import { getServerClient } from '@/lib/supabase/server'
-import { orderInputSchema } from '@/lib/shared/types/order'
+import { submitOrder } from '@/lib/shared/services/orderService'
 import type { OrderInput } from '@/lib/shared/types/order'
 
-export async function submitOrder(input: OrderInput) {
-  const parsed = orderInputSchema.parse(input)
-  const total = parsed.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-
+export async function placeOrder(input: OrderInput) {
   const supabase = await getServerClient()
-
-  const { data: order, error: orderError } = await supabase
-    .from('orders')
-    .insert({
-      customer_name: parsed.customerName,
-      customer_phone: parsed.customerPhone,
-      customer_address: parsed.customerAddress,
-      notes: parsed.notes,
-      total,
-    })
-    .select()
-    .single()
-
-  if (orderError) throw new Error(orderError.message)
-
-  const items = parsed.items.map((item) => ({
-    order_id: order.id,
-    product_id: item.productId,
-    variant_id: item.variantId,
-    product_name: item.productName,
-    variant_name: item.variantName,
-    price: item.price,
-    quantity: item.quantity,
-    image_url: item.imageUrl,
-  }))
-
-  const { error: itemsError } = await supabase.from('order_items').insert(items)
-  if (itemsError) throw new Error(itemsError.message)
-
-  return { orderId: order.id }
+  return submitOrder(supabase, input)
 }
