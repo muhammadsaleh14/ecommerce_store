@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Package, Tags, ShoppingBag, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Package, Tags, ShoppingBag, Building2, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { useAuth } from '@/hooks/useAuth'
 
 const links = [
   { href: '/admin/products', label: 'Products', icon: Package },
@@ -14,6 +15,7 @@ const links = [
 export function AdminSidebar() {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
+  const { isSuperAdmin } = useAuth()
 
   const toggle = () => setCollapsed((c) => !c)
 
@@ -50,6 +52,21 @@ export function AdminSidebar() {
             </Link>
           )
         })}
+
+        {isSuperAdmin && (
+          <>
+            {!collapsed && <div className="pt-3 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Super Admin</div>}
+            <Link
+              href="/admin/superadmin/tenants"
+              className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                collapsed ? 'justify-center px-0' : ''
+              } ${pathname.startsWith('/admin/superadmin') ? 'bg-neutral-900 text-white' : 'text-muted-foreground hover:bg-muted'}`}
+            >
+              <Building2 className="h-4 w-4 shrink-0" />
+              {!collapsed && 'Tenants'}
+            </Link>
+          </>
+        )}
       </nav>
     </aside>
   )
