@@ -7,13 +7,13 @@ import { useAuth } from '@/hooks/useAuth'
 
 const QUERY_KEY = ['products'] as const
 
-function useTenantId() {
-  const { tenantId } = useAuth()
-  return tenantId
+function useActiveTenantId() {
+  const { activeTenantId } = useAuth()
+  return activeTenantId
 }
 
 export function useProducts() {
-  const tenantId = useTenantId()
+  const tenantId = useActiveTenantId()
   return useQuery({
     queryKey: [...QUERY_KEY, tenantId],
     queryFn: () => getProducts(getSupabaseClient(), tenantId!),
@@ -22,7 +22,7 @@ export function useProducts() {
 }
 
 export function useProduct(id: string) {
-  const tenantId = useTenantId()
+  const tenantId = useActiveTenantId()
   return useQuery({
     queryKey: ['product', id, tenantId],
     queryFn: () => getProduct(getSupabaseClient(), tenantId!, id),
@@ -31,7 +31,7 @@ export function useProduct(id: string) {
 }
 
 export function useAddProduct() {
-  const tenantId = useTenantId()
+  const tenantId = useActiveTenantId()
   return useMutation({
     mutationFn: (input: ProductInput) => addProduct(getSupabaseClient(), tenantId!, input),
     onSuccess: () => {
@@ -41,7 +41,7 @@ export function useAddProduct() {
 }
 
 export function useUpdateProduct(id: string) {
-  const tenantId = useTenantId()
+  const tenantId = useActiveTenantId()
   return useMutation({
     mutationFn: (input: ProductInput) => updateProduct(getSupabaseClient(), tenantId!, id, input),
     onSuccess: () => {
@@ -52,7 +52,7 @@ export function useUpdateProduct(id: string) {
 }
 
 export function useDeleteProduct() {
-  const tenantId = useTenantId()
+  const tenantId = useActiveTenantId()
   return useMutation({
     mutationFn: (id: string) => deleteProduct(getSupabaseClient(), tenantId!, id),
     onSuccess: () => {

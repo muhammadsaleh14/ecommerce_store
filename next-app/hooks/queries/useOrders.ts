@@ -5,19 +5,19 @@ import { getOrders, updateOrderStatus } from '@/lib/shared/services/orderService
 import { useAuth } from '@/hooks/useAuth'
 
 export function useOrders() {
-  const { tenantId } = useAuth()
+  const { activeTenantId } = useAuth()
   return useQuery({
-    queryKey: ['orders', tenantId],
-    queryFn: () => getOrders(getSupabaseClient(), tenantId!),
-    enabled: !!tenantId,
+    queryKey: ['orders', activeTenantId],
+    queryFn: () => getOrders(getSupabaseClient(), activeTenantId!),
+    enabled: !!activeTenantId,
   })
 }
 
 export function useUpdateOrderStatus() {
-  const { tenantId } = useAuth()
+  const { activeTenantId } = useAuth()
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) =>
-      updateOrderStatus(getSupabaseClient(), tenantId!, id, status),
+      updateOrderStatus(getSupabaseClient(), activeTenantId!, id, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'], refetchType: 'all' })
     },

@@ -120,12 +120,21 @@ if (adminEmail) {
 
   if (userId) {
     const { error: updateError } = await supabase.auth.admin.updateUserById(userId, {
-      app_metadata: { role: 'admin', tenant_id: 'womencouture' },
+      app_metadata: { role: 'admin' },
     })
     if (updateError) {
       console.error('Failed to set admin role:', updateError.message)
     } else {
       console.log(`Admin role set for ${adminEmail}`)
+    }
+
+    const { error: utError } = await supabase
+      .from('user_tenants')
+      .upsert({ user_id: userId, tenant_id: 'womencouture', role: 'admin' }, { onConflict: 'user_id, tenant_id' })
+    if (utError) {
+      console.error('Failed to associate user with tenant:', utError.message)
+    } else {
+      console.log(`User associated with womencouture tenant`)
     }
   }
 }

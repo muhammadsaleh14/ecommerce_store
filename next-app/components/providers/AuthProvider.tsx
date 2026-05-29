@@ -4,12 +4,18 @@ import { createContext, useEffect, useState, type ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { getSupabaseClient } from '@/lib/supabase/client'
 
+export interface UserTenant {
+  tenantId: string
+  role: string
+}
+
 interface AuthContextValue {
   user: User | null
   loading: boolean
   isAdmin: boolean
   isSuperAdmin: boolean
-  tenantId: string | null
+  activeTenantId: string | null
+  userTenants: UserTenant[]
 }
 
 const AuthContext = createContext<AuthContextValue>({
@@ -17,7 +23,8 @@ const AuthContext = createContext<AuthContextValue>({
   loading: true,
   isAdmin: false,
   isSuperAdmin: false,
-  tenantId: null,
+  activeTenantId: null,
+  userTenants: [],
 })
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -25,15 +32,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [admin, setAdmin] = useState(false)
   const [superAdmin, setSuperAdmin] = useState(false)
-  const [tenantId, setTenantId] = useState<string | null>(null)
+  const [activeTenantId, setActiveTenantId] = useState<string | null>(null)
+  const [userTenants, setUserTenants] = useState<UserTenant[]>([])
 
   useEffect(() => {
     const { data: listener } = getSupabaseClient().auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null)
-      const role = session?.user?.app_metadata?.role
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+      const role = currentUser?.app_metadata?.role
       setAdmin(role === 'admin' || role === 'superadmin')
       setSuperAdmin(role === 'superadmin')
-      setTenantId(session?.user?.app_metadata?.tenant_id ?? null)
+
+      if (currentUser) {
+        const { data } = await getSupabaseClient()
+          .from('user_tenants')
+          .select('tenant_id, role')
+          .eq('user_id', currentUser.id)
+
+        const tenants: UserTenant[] = (data ?? []).map((r: any) => ({
+          tenantId: r.tenant_id,
+          role: r.role,
+        }))
+        setUserTenants(tenants)
+        setActiveTenantId(tenants.length > 0 ? tenants[0].tenantId : null)
+      } else {
+        setUserTenants([])
+        setActiveTenantId(null)
+      }
+
       setLoading(false)
     })
 
@@ -41,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin: admin, isSuperAdmin: superAdmin, tenantId }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin: admin, isSuperAdmin: superAdmin, activeTenantId, userTenants }}>
       {children}
     </AuthContext.Provider>
   )

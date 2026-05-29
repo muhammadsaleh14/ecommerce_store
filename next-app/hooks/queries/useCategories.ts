@@ -4,10 +4,10 @@ import { getCategories } from '@/lib/shared/services/categoryService'
 import { useAuth } from '@/hooks/useAuth'
 
 export function useCategories() {
-  const { tenantId } = useAuth()
+  const { activeTenantId } = useAuth()
   return useQuery({
-    queryKey: ['categories', tenantId],
-    queryFn: () => getCategories(getSupabaseClient(), tenantId!),
-    enabled: !!tenantId,
+    queryKey: ['categories', activeTenantId],
+    queryFn: () => getCategories(getSupabaseClient(), activeTenantId!),
+    enabled: !!activeTenantId,
   })
 }
