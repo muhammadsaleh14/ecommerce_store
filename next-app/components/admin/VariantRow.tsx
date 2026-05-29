@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useRef, useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
@@ -80,29 +80,12 @@ export function VariantRow({ variant, index, canRemove, onChange, onRemove, onFi
             }}
             className="flex-1"
           />
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFilePick}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => fileRef.current?.click()}
-          >
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFilePick} />
+          <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
             Browse
           </Button>
         </div>
-        {displayUrl && (
-          <img
-            src={displayUrl}
-            alt="Preview"
-            className="mt-1 h-16 w-16 rounded object-cover border"
-          />
-        )}
+        {displayUrl && <img src={displayUrl} alt="Preview" className="mt-1 h-16 w-16 rounded object-cover border" />}
       </div>
       <Button
         type="button"

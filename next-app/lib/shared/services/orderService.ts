@@ -53,10 +53,6 @@ export const getOrders = async (client: SupabaseClient, tenantId: string): Promi
 }
 
 export const updateOrderStatus = async (client: SupabaseClient, tenantId: string, id: string, status: string) => {
-  const { error } = await client
-    .from('orders')
-    .update({ status })
-    .eq('tenant_id', tenantId)
-    .eq('id', id)
+  const { error } = await client.from('orders').update({ status }).eq('tenant_id', tenantId).eq('id', id)
   if (error) throw error
 }

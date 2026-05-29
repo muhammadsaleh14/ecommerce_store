@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -22,9 +22,7 @@ export function VariantList({ variants, onChange, onAdd, onRemove, onFilePick }:
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-base">
-          Variants ({variants.length})
-        </CardTitle>
+        <CardTitle className="text-base">Variants ({variants.length})</CardTitle>
         <Button type="button" variant="outline" size="sm" onClick={onAdd}>
           + Add Variant
         </Button>

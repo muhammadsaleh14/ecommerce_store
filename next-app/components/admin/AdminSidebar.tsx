@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -20,7 +20,9 @@ export function AdminSidebar() {
   const toggle = () => setCollapsed((c) => !c)
 
   return (
-    <aside className={`${collapsed ? 'w-14' : 'w-56'} shrink-0 border-r bg-white min-h-screen flex flex-col transition-all duration-200`}>
+    <aside
+      className={`${collapsed ? 'w-14' : 'w-56'} shrink-0 border-r bg-white min-h-screen flex flex-col transition-all duration-200`}
+    >
       <div className={`border-b flex items-center ${collapsed ? 'justify-center p-2' : 'justify-between p-4'}`}>
         {!collapsed && (
           <Link href="/admin/products" className="text-lg font-bold tracking-tight">
@@ -41,11 +43,7 @@ export function AdminSidebar() {
               href={link.href}
               className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 collapsed ? 'justify-center px-0' : ''
-              } ${
-                active
-                  ? 'bg-neutral-900 text-white'
-                  : 'text-muted-foreground hover:bg-muted'
-              }`}
+              } ${active ? 'bg-neutral-900 text-white' : 'text-muted-foreground hover:bg-muted'}`}
             >
               <Icon className="h-4 w-4 shrink-0" />
               {!collapsed && link.label}
@@ -55,7 +53,11 @@ export function AdminSidebar() {
 
         {isSuperAdmin && (
           <>
-            {!collapsed && <div className="pt-3 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Super Admin</div>}
+            {!collapsed && (
+              <div className="pt-3 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                Super Admin
+              </div>
+            )}
             <Link
               href="/admin/superadmin/tenants"
               className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${

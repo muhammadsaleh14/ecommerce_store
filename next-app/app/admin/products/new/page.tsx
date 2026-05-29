@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,19 +25,13 @@ export default function AddProductPage() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('other')
-  const [variants, setVariants] = useState<VariantData[]>([
-    { name: '', price: 0, imageUrl: '' },
-  ])
+  const [variants, setVariants] = useState<VariantData[]>([{ name: '', price: 0, imageUrl: '' }])
   const [pendingFiles, setPendingFiles] = useState<(File | null)[]>([null])
   const [submitting, setSubmitting] = useState(false)
 
   const handleVariantChange = (idx: number, field: keyof VariantData, value: string) => {
     setVariants(
-      variants.map((v, i) =>
-        i === idx
-          ? { ...v, [field]: field === 'price' ? parseFloat(value) || 0 : value }
-          : v,
-      ),
+      variants.map((v, i) => (i === idx ? { ...v, [field]: field === 'price' ? parseFloat(value) || 0 : value } : v)),
     )
   }
 

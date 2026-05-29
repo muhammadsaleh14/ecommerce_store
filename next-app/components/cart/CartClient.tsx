@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useCart } from '@/lib/context/cart'
@@ -52,7 +52,9 @@ export function CartClient({ tenantId }: { tenantId: string }) {
       <section className="px-[10%] py-16 text-center">
         <div className="max-w-md mx-auto bg-white border-2 border-black p-8 shadow-[6px_6px_0px_#000]">
           <h1 className="font-['Playfair_Display',_serif] text-2xl font-bold mb-2">Order Placed!</h1>
-          <p className="text-sm mb-4">Your order has been placed successfully. You will receive a confirmation call shortly.</p>
+          <p className="text-sm mb-4">
+            Your order has been placed successfully. You will receive a confirmation call shortly.
+          </p>
           <p className="text-xs font-bold uppercase mb-6">Order ID: {orderId.slice(0, 8)}</p>
           <Link
             href="/products"

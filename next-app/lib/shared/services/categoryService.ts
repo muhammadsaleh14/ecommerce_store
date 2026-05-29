@@ -16,7 +16,11 @@ export const getCategories = async (client: SupabaseClient, tenantId: string): P
   }))
 }
 
-export const addCategory = async (client: SupabaseClient, tenantId: string, input: { slug: string; name: string; description?: string }) => {
+export const addCategory = async (
+  client: SupabaseClient,
+  tenantId: string,
+  input: { slug: string; name: string; description?: string },
+) => {
   const { error } = await client.from('categories').insert({
     slug: input.slug,
     name: input.name,
@@ -26,20 +30,17 @@ export const addCategory = async (client: SupabaseClient, tenantId: string, inpu
   if (error) throw error
 }
 
-export const updateCategory = async (client: SupabaseClient, tenantId: string, slug: string, input: { name?: string; description?: string }) => {
-  const { error } = await client
-    .from('categories')
-    .update(input)
-    .eq('tenant_id', tenantId)
-    .eq('slug', slug)
+export const updateCategory = async (
+  client: SupabaseClient,
+  tenantId: string,
+  slug: string,
+  input: { name?: string; description?: string },
+) => {
+  const { error } = await client.from('categories').update(input).eq('tenant_id', tenantId).eq('slug', slug)
   if (error) throw error
 }
 
 export const deleteCategory = async (client: SupabaseClient, tenantId: string, slug: string) => {
-  const { error } = await client
-    .from('categories')
-    .delete()
-    .eq('tenant_id', tenantId)
-    .eq('slug', slug)
+  const { error } = await client.from('categories').delete().eq('tenant_id', tenantId).eq('slug', slug)
   if (error) throw error
 }

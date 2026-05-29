@@ -6,7 +6,9 @@ export function ProductDetailPage({ product }: { product: any }) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-20">
         <h1 className="font-['Playfair_Display',_serif] text-xl font-bold">Product not found</h1>
-        <Link href="/products" className="underline text-sm font-bold">Back to products</Link>
+        <Link href="/products" className="underline text-sm font-bold">
+          Back to products
+        </Link>
       </div>
     )
   }

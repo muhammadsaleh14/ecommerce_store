@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react'
 
@@ -39,7 +39,9 @@ function loadCart(): CartItem[] {
 function saveCart(items: CartItem[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
@@ -57,9 +59,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => {
       const existing = prev.find((i) => i.variantId === item.variantId)
       if (existing) {
-        return prev.map((i) =>
-          i.variantId === item.variantId ? { ...i, quantity: i.quantity + 1 } : i,
-        )
+        return prev.map((i) => (i.variantId === item.variantId ? { ...i, quantity: i.quantity + 1 } : i))
       }
       return [...prev, { ...item, quantity: 1 }]
     })

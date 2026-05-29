@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,21 +31,27 @@ export default function AdminCategoriesPage() {
       setNewSlug('')
       setNewName('')
       setNewDesc('')
-    } catch { /* handled */ }
+    } catch {
+      /* handled */
+    }
   }
 
   const handleUpdate = async (slug: string) => {
     try {
       await updateCategory.mutateAsync({ slug, name: editName || undefined, description: editDesc || undefined })
       setEditSlug(null)
-    } catch { /* handled */ }
+    } catch {
+      /* handled */
+    }
   }
 
   const handleDelete = async (slug: string) => {
     if (!confirm(`Delete "${slug}"?`)) return
     try {
       await deleteCategory.mutateAsync(slug)
-    } catch { /* handled */ }
+    } catch {
+      /* handled */
+    }
   }
 
   if (isLoading) {
@@ -74,11 +80,21 @@ export default function AdminCategoriesPage() {
       <form onSubmit={handleAdd} className="flex items-end gap-3 flex-wrap">
         <div className="space-y-1">
           <label className="text-xs font-medium text-muted-foreground">Slug</label>
-          <Input value={newSlug} onChange={(e) => setNewSlug(e.target.value)} placeholder="e.g. clothing" className="w-36" />
+          <Input
+            value={newSlug}
+            onChange={(e) => setNewSlug(e.target.value)}
+            placeholder="e.g. clothing"
+            className="w-36"
+          />
         </div>
         <div className="space-y-1">
           <label className="text-xs font-medium text-muted-foreground">Name</label>
-          <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Clothing" className="w-44" />
+          <Input
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            placeholder="e.g. Clothing"
+            className="w-44"
+          />
         </div>
         <div className="space-y-1">
           <label className="text-xs font-medium text-muted-foreground">Description</label>
@@ -100,7 +116,12 @@ export default function AdminCategoriesPage() {
                   <div className="flex items-center gap-3 flex-wrap">
                     <span className="text-sm font-mono text-muted-foreground w-28">{cat.slug}</span>
                     <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="w-44" />
-                    <Input value={editDesc} onChange={(e) => setEditDesc(e.target.value)} className="w-60" placeholder="Description" />
+                    <Input
+                      value={editDesc}
+                      onChange={(e) => setEditDesc(e.target.value)}
+                      className="w-60"
+                      placeholder="Description"
+                    />
                     <Button size="sm" onClick={() => handleUpdate(cat.slug)} disabled={updateCategory.isPending}>
                       Save
                     </Button>
@@ -112,7 +133,10 @@ export default function AdminCategoriesPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold">{cat.name}</p>
-                      <p className="text-sm text-muted-foreground">{cat.slug}{cat.description ? ` — ${cat.description}` : ''}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {cat.slug}
+                        {cat.description ? ` — ${cat.description}` : ''}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Button
@@ -126,7 +150,12 @@ export default function AdminCategoriesPage() {
                       >
                         Edit
                       </Button>
-                      <Button size="sm" variant="destructive" onClick={() => handleDelete(cat.slug)} disabled={deleteCategory.isPending}>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDelete(cat.slug)}
+                        disabled={deleteCategory.isPending}
+                      >
                         Delete
                       </Button>
                     </div>

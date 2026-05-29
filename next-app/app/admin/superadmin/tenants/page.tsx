@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useTenants, useAddTenant, useUpdateTenant } from '@/hooks/queries/useTenants'
@@ -24,7 +24,9 @@ export default function SuperAdminTenantsPage() {
       await addTenant.mutateAsync({ id: newId, name: newName })
       setNewId('')
       setNewName('')
-    } catch { /* handled by react-query */ }
+    } catch {
+      /* handled by react-query */
+    }
   }
 
   const handleUpdate = async (id: string) => {
@@ -33,7 +35,9 @@ export default function SuperAdminTenantsPage() {
       await updateTenant.mutateAsync({ id, name: editingName })
       setEditingId(null)
       setEditingName('')
-    } catch { /* handled */ }
+    } catch {
+      /* handled */
+    }
   }
 
   if (isLoading) {
@@ -76,11 +80,7 @@ export default function SuperAdminTenantsPage() {
               {editingId === tenant.id ? (
                 <div className="flex items-center gap-3 flex-1">
                   <span className="text-sm font-mono text-muted-foreground w-32">{tenant.id}</span>
-                  <Input
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    className="max-w-xs"
-                  />
+                  <Input value={editingName} onChange={(e) => setEditingName(e.target.value)} className="max-w-xs" />
                   <Button size="sm" onClick={() => handleUpdate(tenant.id)} disabled={updateTenant.isPending}>
                     Save
                   </Button>

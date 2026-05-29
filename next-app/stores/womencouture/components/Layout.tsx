@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { config } from '../config'
 import Link from 'next/link'
@@ -11,10 +11,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen font-['Lato',_sans-serif]" style={{ backgroundColor: theme.bg }}>
-      <nav className="flex items-center justify-between px-[10%] py-5 border-b-2" style={{ borderColor: theme.borderColor }}>
-        <Link href="/" className="font-['Playfair_Display',_serif] text-xl font-bold tracking-wide">{content.name}</Link>
+      <nav
+        className="flex items-center justify-between px-[10%] py-5 border-b-2"
+        style={{ borderColor: theme.borderColor }}
+      >
+        <Link href="/" className="font-['Playfair_Display',_serif] text-xl font-bold tracking-wide">
+          {content.name}
+        </Link>
         <div className="flex items-center gap-5">
-          <Link href="/products" className="text-[11px] font-bold uppercase tracking-widest hover:transition-colors">Products</Link>
+          <Link href="/products" className="text-[11px] font-bold uppercase tracking-widest hover:transition-colors">
+            Products
+          </Link>
           <Link href="/cart" className="relative">
             <ShoppingCart className="h-5 w-5" style={{ color: theme.borderColor }} />
             {itemCount > 0 && (

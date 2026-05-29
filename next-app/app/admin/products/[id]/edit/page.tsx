@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -61,11 +61,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
   const handleVariantChange = (idx: number, field: keyof VariantData, value: string) => {
     setVariants(
-      variants.map((v, i) =>
-        i === idx
-          ? { ...v, [field]: field === 'price' ? parseFloat(value) || 0 : value }
-          : v,
-      ),
+      variants.map((v, i) => (i === idx ? { ...v, [field]: field === 'price' ? parseFloat(value) || 0 : value } : v)),
     )
   }
 

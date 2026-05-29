@@ -64,15 +64,21 @@ export function HomePage({ products }: { products: any[] }) {
       <section className="border-y-2 bg-white" style={{ borderColor: theme.borderColor }}>
         <div className="grid grid-cols-3 divide-x-2" style={{ borderColor: theme.borderColor }}>
           <div className="py-8 text-center">
-            <p className="font-['Playfair_Display',_serif] text-3xl font-bold" style={{ color: theme.accent }}>Premium</p>
+            <p className="font-['Playfair_Display',_serif] text-3xl font-bold" style={{ color: theme.accent }}>
+              Premium
+            </p>
             <p className="text-xs font-bold uppercase tracking-wider mt-1">Quality Fabrics</p>
           </div>
           <div className="py-8 text-center">
-            <p className="font-['Playfair_Display',_serif] text-3xl font-bold" style={{ color: theme.accent }}>Pan Pakistan</p>
+            <p className="font-['Playfair_Display',_serif] text-3xl font-bold" style={{ color: theme.accent }}>
+              Pan Pakistan
+            </p>
             <p className="text-xs font-bold uppercase tracking-wider mt-1">Free Delivery</p>
           </div>
           <div className="py-8 text-center">
-            <p className="font-['Playfair_Display',_serif] text-3xl font-bold" style={{ color: theme.accent }}>Easy</p>
+            <p className="font-['Playfair_Display',_serif] text-3xl font-bold" style={{ color: theme.accent }}>
+              Easy
+            </p>
             <p className="text-xs font-bold uppercase tracking-wider mt-1">Exchange &amp; Returns</p>
           </div>
         </div>
@@ -82,7 +88,9 @@ export function HomePage({ products }: { products: any[] }) {
         <div className="flex items-end justify-between mb-10">
           <div>
             <h2 className="font-['Playfair_Display',_serif] text-3xl font-bold">Trending Now</h2>
-            <p className="text-sm mt-1" style={{ color: 'rgba(0,0,0,0.6)' }}>Most loved pieces this season</p>
+            <p className="text-sm mt-1" style={{ color: 'rgba(0,0,0,0.6)' }}>
+              Most loved pieces this season
+            </p>
           </div>
           <Link
             href="/products"
@@ -94,7 +102,9 @@ export function HomePage({ products }: { products: any[] }) {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {(!products || products.length === 0) && (
-            <p className="col-span-full text-center" style={{ color: 'rgba(0,0,0,0.6)' }}>No products yet.</p>
+            <p className="col-span-full text-center" style={{ color: 'rgba(0,0,0,0.6)' }}>
+              No products yet.
+            </p>
           )}
           {products?.map((product: any) => (
             <ProductCard key={product.id} product={product} />
@@ -108,7 +118,8 @@ export function HomePage({ products }: { products: any[] }) {
             The Perfect Fit Awaits
           </h2>
           <p className="text-sm sm:text-base text-white/70 mb-8 leading-relaxed">
-            From festive occasions to everyday elegance — find your style in our curated collection of Pakistani fashion.
+            From festive occasions to everyday elegance — find your style in our curated collection of Pakistani
+            fashion.
           </p>
           <Link
             href="/products"

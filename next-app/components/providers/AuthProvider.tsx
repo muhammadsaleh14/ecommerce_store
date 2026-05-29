@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { createContext, useEffect, useState, type ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
@@ -67,7 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin: admin, isSuperAdmin: superAdmin, activeTenantId, userTenants }}>
+    <AuthContext.Provider
+      value={{ user, loading, isAdmin: admin, isSuperAdmin: superAdmin, activeTenantId, userTenants }}
+    >
       {children}
     </AuthContext.Provider>
   )

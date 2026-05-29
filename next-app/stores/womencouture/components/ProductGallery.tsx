@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { config } from '../config'
@@ -34,7 +34,11 @@ export function ProductGallery({ product }: { product: any }) {
             {product.category}
           </span>
           <h1 className="font-['Playfair_Display',_serif] text-2xl sm:text-3xl font-bold">{product.name}</h1>
-          {product.description && <p className="text-sm leading-relaxed" style={{ color: 'rgba(0,0,0,0.7)' }}>{product.description}</p>}
+          {product.description && (
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(0,0,0,0.7)' }}>
+              {product.description}
+            </p>
+          )}
           <p className="text-sm text-black/60">No variants available.</p>
         </div>
       </div>
@@ -78,7 +82,9 @@ export function ProductGallery({ product }: { product: any }) {
         </span>
         <h1 className="font-['Playfair_Display',_serif] text-2xl sm:text-3xl font-bold">{product.name}</h1>
         {product.description && (
-          <p className="text-sm leading-relaxed" style={{ color: 'rgba(0,0,0,0.7)' }}>{product.description}</p>
+          <p className="text-sm leading-relaxed" style={{ color: 'rgba(0,0,0,0.7)' }}>
+            {product.description}
+          </p>
         )}
         <p className="text-xl font-bold" style={{ color: theme.accent }}>
           {content.currency} {variant.price.toFixed(2).replace('.00', '')}

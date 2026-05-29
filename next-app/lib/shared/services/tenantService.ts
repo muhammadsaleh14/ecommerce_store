@@ -7,10 +7,7 @@ export interface Tenant {
 }
 
 export const getTenants = async (client: SupabaseClient): Promise<Tenant[]> => {
-  const { data, error } = await client
-    .from('tenants')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const { data, error } = await client.from('tenants').select('*').order('created_at', { ascending: false })
 
   if (error) throw error
   return (data ?? []).map((row) => ({
