@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useCart } from '@/lib/context/cart'
-import { placeOrder } from '@/lib/actions/order'
+import { submitOrder } from '@/lib/shared/services/orderService'
+import { getSupabaseClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { Trash2, Minus, Plus } from 'lucide-react'
 
@@ -22,7 +23,7 @@ export function CartClient() {
     setSubmitting(true)
     setError('')
     try {
-      const result = await placeOrder({
+      const result = await submitOrder(getSupabaseClient(), {
         customerName: name,
         customerPhone: phone,
         customerAddress: address,
