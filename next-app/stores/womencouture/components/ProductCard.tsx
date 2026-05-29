@@ -3,10 +3,10 @@ import Link from 'next/link'
 
 export function ProductCard({ product }: { product: any }) {
   const { theme, content } = config
-  const prices = product.product_variants?.map((v: any) => v.price) || []
+  const prices = product.variants?.map((v: any) => v.price) || []
   const minPrice = prices.length ? Math.min(...prices) : null
   const maxPrice = prices.length ? Math.max(...prices) : null
-  const firstImage = product.product_variants?.find((v: any) => v.image_url)?.image_url
+  const firstImage = product.variants?.find((v: any) => v.imageUrl)?.imageUrl
 
   return (
     <Link href={`/products/${product.id}`}>

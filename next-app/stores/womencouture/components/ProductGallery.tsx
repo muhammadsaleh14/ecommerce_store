@@ -6,10 +6,10 @@ import { useCart } from '@/lib/context/cart'
 
 export function ProductGallery({ product }: { product: any }) {
   const { theme, content } = config
-  const variants = product.product_variants || []
+  const variants = product.variants || []
   const [selected, setSelected] = useState(0)
   const variant = variants[selected]
-  const imageUrl = variant?.image_url
+  const imageUrl = variant?.imageUrl
   const { addItem } = useCart()
 
   if (!variants.length) {
@@ -48,7 +48,7 @@ export function ProductGallery({ product }: { product: any }) {
       productName: product.name,
       variantName: variant.name,
       price: variant.price,
-      imageUrl: variant.image_url || '',
+      imageUrl: variant.imageUrl || '',
     })
   }
 
