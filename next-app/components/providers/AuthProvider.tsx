@@ -36,15 +36,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userTenants, setUserTenants] = useState<UserTenant[]>([])
 
   useEffect(() => {
-    const { data: listener } = getSupabaseClient().auth.onAuthStateChange(async (_event, session) => {
+    const supabase = getSupabaseClient()
+    let cancelled = false
+
+    async function handleSession(session: import('@supabase/supabase-js').Session | null) {
       const currentUser = session?.user ?? null
+      if (cancelled) return
       setUser(currentUser)
 
       if (currentUser) {
-        const { data } = await getSupabaseClient()
+        const { data } = await supabase
           .from('user_tenants')
           .select('tenant_id, role')
           .eq('user_id', currentUser.id)
+
+        if (cancelled) return
 
         const tenants: UserTenant[] = (data ?? []).map((r: any) => ({
           tenantId: r.tenant_id,
@@ -61,10 +67,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setActiveTenantId(null)
       }
 
-      setLoading(false)
+      if (!cancelled) setLoading(false)
+    }
+
+    // Restore session from cookies on page reload
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      handleSession(session)
     })
 
-    return () => listener?.subscription.unsubscribe()
+    // React to future auth changes (login, logout, token refresh)
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      handleSession(session)
+    })
+
+    return () => {
+      cancelled = true
+      listener?.subscription.unsubscribe()
+    }
   }, [])
 
   return (
