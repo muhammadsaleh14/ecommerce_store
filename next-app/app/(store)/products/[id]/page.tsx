@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { getServerClient } from '@/lib/supabase/server'
+import { getProduct } from '@/lib/shared/services/productService'
 import { getStore } from '@/stores/registry'
 
 export default async function ProductDetailPage({
@@ -10,12 +11,7 @@ export default async function ProductDetailPage({
 }) {
   const { id } = await params
   const supabase = await getServerClient()
-
-  const { data: product } = await supabase
-    .from('products')
-    .select('*, product_variants(*)')
-    .eq('id', id)
-    .single()
+  const product = await getProduct(supabase, id)
 
   const store = await getStore()
   const Page = store.pages.ProductDetailPage

@@ -2,11 +2,15 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { productSchema, toProduct } from '../types/product'
 import type { Product, ProductInput } from '../types/product'
 
-export const getProducts = async (client: SupabaseClient): Promise<Product[]> => {
-  const { data, error } = await client
+export const getProducts = async (client: SupabaseClient, limit?: number): Promise<Product[]> => {
+  let query = client
     .from('products')
     .select('*, product_variants(*)')
     .order('created_at', { ascending: false })
+
+  if (limit) query = query.limit(limit)
+
+  const { data, error } = await query
 
   if (error) throw error
   return (data ?? []).map((row) => toProduct(row as Parameters<typeof toProduct>[0]))
