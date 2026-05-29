@@ -39,9 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: listener } = getSupabaseClient().auth.onAuthStateChange(async (_event, session) => {
       const currentUser = session?.user ?? null
       setUser(currentUser)
-      const role = currentUser?.app_metadata?.role
-      setAdmin(role === 'admin' || role === 'superadmin')
-      setSuperAdmin(role === 'superadmin')
 
       if (currentUser) {
         const { data } = await getSupabaseClient()
@@ -54,9 +51,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           role: r.role,
         }))
         setUserTenants(tenants)
-        setActiveTenantId(tenants.length > 0 ? tenants[0].tenantId : null)
+        setSuperAdmin(tenants.some((t) => t.role === 'superadmin'))
+        setAdmin(tenants.some((t) => t.role === 'admin' || t.role === 'superadmin'))
+        setActiveTenantId(tenants[0]?.tenantId ?? currentUser.app_metadata?.tenant_id ?? 'womencouture')
       } else {
         setUserTenants([])
+        setSuperAdmin(false)
+        setAdmin(false)
         setActiveTenantId(null)
       }
 

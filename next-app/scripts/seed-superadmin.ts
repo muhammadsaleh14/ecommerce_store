@@ -56,14 +56,14 @@ if (existing) {
 }
 
 if (userId) {
-  const { error: updateError } = await supabase.auth.admin.updateUserById(userId, {
-    app_metadata: { role: 'superadmin' },
-  })
-  if (updateError) {
-    console.error('Failed to set superadmin role:', updateError.message)
+  const { error: utError } = await supabase
+    .from('user_tenants')
+    .upsert({ user_id: userId, tenant_id: 'womencouture', role: 'superadmin' }, { onConflict: 'user_id, tenant_id' })
+  if (utError) {
+    console.error('Failed to associate superadmin with tenant:', utError.message)
     process.exit(1)
   }
-  console.log(`Superadmin role set for ${email}`)
+  console.log(`Superadmin associated with womencouture tenant`)
 }
 
 console.log('Done')

@@ -14,11 +14,6 @@ where raw_app_meta_data->>'tenant_id' = 'womencouture'
 
 alter table user_tenants enable row level security;
 
-create policy "Superadmin can manage all user_tenants"
-  on user_tenants for all to authenticated
-  using ((select raw_app_meta_data->>'role' from auth.users where id = auth.uid()) = 'superadmin')
-  with check ((select raw_app_meta_data->>'role' from auth.users where id = auth.uid()) = 'superadmin');
-
 create policy "Users can view their own user_tenants"
   on user_tenants for select to authenticated
   using (user_id = auth.uid());
